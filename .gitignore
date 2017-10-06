@@ -1,0 +1,6 @@
+linux-yocto-3.19/.tmp_vmlinux2
+linux-yocto-3.19/vmlinux
+linux-yocto-3.19/vmlinux.o
+linux-yocto-3.19/core-image-lsb-sdk-qemux86.ext4
+linux-yocto-3.19/.tmp_vmlinux1
+
