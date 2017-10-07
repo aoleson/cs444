@@ -44,8 +44,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <sys/queue.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
 /* Period parameters */  
+#define MAX 32
 #define N 624
 #define M 397
 #define MATRIX_A 0x9908b0dfUL   /* constant vector a */
@@ -59,6 +63,65 @@
 
 static unsigned long mt[N]; /* the array for the state vector  */
 static int mti=N+1; /* mti==N+1 means mt[N] is not initialized */
+struct producerArgs{
+	long tid;
+	long sleep_time;
+};
+
+struct item{
+	unsigned long randNum;
+	int sleep_time;
+}
+/*
+ * Queue implementation borrowed & modified from:
+ * https://www.tutorialspoint.com/data_structures_algorithms/queue_program_in_c.htm
+ */
+struct item sharedQueue[MAX];
+int front = 0;
+int rear = -1;
+int itemCount = 0;
+
+struct item peek() {
+	return sharedQueue[front];
+}
+
+bool isEmpty() {
+	return itemCount == 0;
+}
+
+bool isFull() {
+	return itemCount == MAX;
+}
+
+int size() {
+	return itemCount;
+}
+
+void insert(struct item data) {
+	
+	if(!isFull()) {
+
+		if(rear == MAX-1) {
+			rear = -1;
+		}
+
+		sharedQueue[++rear] = data;
+		itemCount++;
+	}
+}
+
+struct item removeData() {
+	struct item data = sharedQueue[front++];
+
+	if (front == MAX) {
+		front = 0;
+	}
+
+	itemCount--;
+	return data;
+}
+
+
 
 /* initializes mt[N] with a seed */
 void init_genrand(unsigned long s)
@@ -207,13 +270,24 @@ int getRandInt(unsigned int ecx, unsigned int beginRange, unsigned int endRange)
 }
 
 
-int main() {
+int main(int argc, char **argv) {
+	if (argc != 3) {
+		printf("Proper formatting: concurrency_1 [number of Consumers] [number of Producers]\n");
+		return 400;
+	}
 	unsigned int eax = 0x01;
 	unsigned int ebx = 0;
 	unsigned int ecx = 0;
 	unsigned int edx = 0;
 	unsigned int beginRange = 2;
 	unsigned int endRange = 9;
+	int numConsumers = atoi(argv[1]);
+	int numProducers = atoi(argv[2]);
+
+	struct queue producerValues[atoi(argv[2])];
+	struct queue consumerVaues[atoi(argv[1])];
+
+	printf("%d Consumers, %d Producers\n", numConsumers, numProducers);
 
     unsigned long init[4]={0x123, 0x234, 0x345, 0x456}, length=4;
 	init_by_array(init, length);
@@ -223,9 +297,20 @@ int main() {
 						: "a"(eax)
 			);
 
+/*
 	int q,p;
 	for (p = 0; p < 10; p++)
 		printf("%d this is rando\n", getRandInt(ecx, beginRange, endRange));
+*/	
+	for (int cnt = 0; cnt < numProducers; cnt++) {
+		producerValues[cnt].tid = cnt;
+		producerValues[cnt].sleep_time = getRandInt(ecx, 3, 7);
+		
+
+	}
+	
+	
+
 
 	return 0;
 }	
