@@ -1,6 +1,7 @@
 
 
 pdf:
+	./changes.sh > changelog.tex
 	pdflatex Assignment1.tex	
 
 all: pdf
