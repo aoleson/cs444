@@ -1,14 +1,14 @@
-\documentclass[letterpaper,10pt,titlepage]{article}
+\documentclass[letterpaper,10pt]{article}
 
 \usepackage{hyperref}
 \usepackage{titling}
 \usepackage[normalem]{ulem}
 \useunder{\uline}{\ul}{}
-\usepackage{graphicx}                                        
+\usepackage{graphicx}
 
-\usepackage{amssymb}                                         
-\usepackage{amsmath}                                         
-\usepackage{amsthm}                                          
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
 
 \usepackage{alltt}                                           
 \usepackage{float}
@@ -18,7 +18,7 @@
 \usepackage{balance}
 \usepackage{pstricks, pst-node}
 
-\usepackage{geometry}
+\usepackage[margin=0.5in]{geometry}
 \usepackage{listings}  
 \lstset{language=C}
 \geometry{textheight=8.5in, textwidth=6in}
@@ -29,7 +29,6 @@
 \newcommand{\cblue}[1]{{\color{blue}#1}}
 
 \usepackage{hyperref}
-\usepackage{geometry}
 
 \def\name{Alannah Oleson, Jacob Mahugh}
 
@@ -45,29 +44,22 @@
   pdfpagemode = UseNone
 }
 
-
-\title{Project 1 - Getting Acquainted}
-\title{CS 444 - Operating Systems 2}
-\title{Fall 2017}
+\title{Project 1 - Getting Acquainted\\CS 444\\Fall 2017}
 \author{\name}
 
 
 \begin{document}
 
+\maketitle
 
-\begin{titlepage}
-   \title{Project 1 - Getting Acquainted\\CS 444\\Fall 2017}
-   \author{\name}
-   \maketitle
+\begin{abstract}
+   In this assignment, we got our first look at how to build a Linux kernel and run it in a virtual machine.
+   We set up our environment on the OS2 server and ensured that we could boot correctly.
+   We then examined the flags of the given qemu command.
+   Finally, we completed and analyzed our first concurrency assignment, learning how to leverage different threads to communicate through consumption and production of values.
+\end{abstract}
 
-   \begin{abstract}
-      In this assignment, we got our first look at how to build a Linux kernel and run it in a virtual machine.
-      We set up our environment on the OS2 server and ensured that we could boot correctly.
-      We then examined the flags of the given qemu command.
-      Finally, we completed and analyzed our first concurrency assignment, learning how to leverage different threads to communicate through consumption and production of values.
-   \end{abstract}
-
-\end{titlepage}
+\clearpage
 
 
 \section{Command Line Commands}
@@ -75,22 +67,22 @@
 \subsection{In Terminal 1}
 
 \begin{itemize}
-   \item \verb|cd /scratch/fall2017/30|
-   \item \verb|git clone git://git.yoctoproject.org/linux-yocto-3.19|
-   \item \verb|git branch v3.19.2|
-   \item \verb|cp /scratch/files/environment-setup-i586-poky-linux .|
-   \item \verb|cp /scratch/files/bzImage-qemux86.bin ./linux-yocto-3.19|
-   \item \verb|cp /scratch/files/core-image-lsb-sdk-qemux86.ext4 ./linux-yocto-3.19|
-   \item \verb|source environment-setup-i586-poky-linux|
-   \item \verb|make -j4 all|
-   \item \verb|qemu-system-i386 -gdb tcp::5530 -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"|
+   \item cd /scratch/fall2017/30
+   \item git clone git://git.yoctoproject.org/linux-yocto-3.19
+   \item git branch v3.19.2
+   \item cp /scratch/files/environment-setup-i586-poky-linux .
+   \item cp /scratch/files/bzImage-qemux86.bin ./linux-yocto-3.19
+   \item cp /scratch/files/core-image-lsb-sdk-qemux86.ext4 ./linux-yocto-3.19
+   \item source environment-setup-i586-poky-linux
+   \item make -j4 all
+   \item qemu-system-i386 -gdb tcp::5530 -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext4, if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
 \end{itemize}
 
 \subsection{In Terminal 2}
 \begin{itemize}
-   \item \verb|gdb|
-   \item \verb|file vmlinux|
-   \item \verb|target remote :5530|
+   \item gdb
+   \item file vmlinux
+   \item target remote :5530
    \item Log in with root and no password.
 \end{itemize}
 
