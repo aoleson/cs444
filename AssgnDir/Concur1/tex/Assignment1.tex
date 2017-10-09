@@ -115,12 +115,76 @@
 \section{Concurrency Questions}
 
 \subsection{What do you think the main point of this assignment is?}
+The concurrency assignment's point was to remind us of the basic system programming concepts (which, for many of us, were learned over a year ago) while also challenging us to come up with our own take on the problem.
+We learned to use resources from the class page (like the semaphores book Kevin recommended) and online (like the documentation on pthreads) to come up with our solution.
+Since this class is after a summer where most of us didn’t program in C, it was also a nice way to get back into the language, and a good reminder of assembly code programming and the documentation available for that.
+In addition, concurrency problems are common in job interviews and are considered fair game in technical fields to ask about.
+By coming up with a solution for this variant of concurrency problem, we will be better able to adapt our model to future problems.
+
+
+The writeup introduced us to LaTeX, which will be useful not only in this class, but in architecture and capstone as well.
+Getting familiar with the process of writing LaTeX documents will serve us well in the future.
+
+
+Overall, this assignment was a great way to get us to be familiar enough with the tools and resources at our disposal to be successful in future assignments.
+For the first part of the assignment, we just had to get the kernel to boot up.
+However, to do this, we had to get familiar with the command line environment that we would be using on the os2 server.
+This showed us how to use resources like the QEMU documentation, the Linux man pages, the tutorials and templates on the course webpage, our peers, and of course Kevin and the TAs for when we got really stuck.
+In addition, it was a good refresher on how to set up and use git.
+Simply getting the kernel to boot felt like such an accomplishment that it will probably make us feel more comfortable messing around with it on future assignments.
+It also showed us what a successful boot looked like, so that in the future we would know when ours went wrong.
+
 
 \subsection{How did you personally approach the problem? Design decisions, algorithm, etc.}
+We started by recalling that when we used pthreads in OS1, we had to lock and unlock them using mutexes to ensure that the data being passed between them didn't get corrupted.
+This led us to look up our code from OS1 and see how we used mutexes previously.
+The file pthreadhello.c on the course site was also a good minimal example that we referenced when programming.
+
+Then, we considered what would be the best way to structure our program, given that we had to have multiple consumer threads and one (or more) producer threads.
+The key decision we made here was to use a queue (FIFO) to hold the data structures that would house the struct's value and sleep time.
+This way, we could have the producers storing items in the FIFO, and the consumers would read from the FIFO in the order in which the structs were put in.
+To ensure the threads didn't step on each other’s toes, we decided to use a mutex on the FIFO that would only allow one thread to access it at a time.
+When a producer wanted to write to the FIFO, it would wait until it could lock the mutex, write, then unlock the mutex.
+A consumer would do the same for reading from the FIFO.
+
+We decided to spawn the producer and consumer threads within the main process.
+Towards this end, we have different functions for each category of thread to run: one for the producers, which creates a randomly filled struct and sticks it in the FIFO, and one for the consumers, which receives a randomly filled struct from the FIFO and prints out its information after sleeping.
+We have for-loops that spawn the requested number of each thread with the correct function call.
+
+Inside the functions that the threads run, we found that we had to implement a double-check on the locking mutex to ensure that it was actually locked.
+We discovered this when, rarely, two threads would attempt to lock the mutex at the same time.
+One would receive the lock and the other would hang, but both would try to execute the subsequent code as if it had the lock.
+Obviously, the thread without the lock would not function correctly, so we added a few lines to check if the lock had been successful to avoid this situation.
+
+To optimize the program slightly, we chose to add special while loops before the mutex lock attempts in both the consumer and producer threads.
+These loops do not have a body, but they check to see if the number of items in the FIFO is greater than the maximum (producerAction()) or if the FIFO is empty (consumerAction()).
+These loops prevent an edge case error: namely, that consumer threads could lock the mutex when there were no structs to be consumed, or vice versa when the FIFO was full.
+With the loops, the other category of thread is guaranteed to get a chance to lock the mutex and do what needs to be done.
+
+One problem that we ran into was the fact that the functions that the threads called had to implemented with void pointers in place of typed pointers.
+Initially, we tried to just pass the structs and arguments as normal.
+However, we were able to realize the error by checking pthread documentation.
+We had a few syntax issues with how to typecast structs after that, but were able to figure it out quickly enough.
+
 
 \subsection{How did you ensure your solution was correct? Testing details, for instance.}
+Since part of the assignment involved using different random number generation methods depending on what the system supported, we started by implementing and testing that.
+Because we were coding on the OS2 server, we tested our Mersenne Twister implementation first.
+We did this by generating 50 random numbers within the range 2-12 using our method and printing them out.
+We then checked them to ensure that the edges of the range were being generated, as well as a decent sample of the numbers inside the range.
+We used the same method to test our rdrand implementation, except that instead of running it on the server, we ran it on our local machine that supported the instruction.
+
+Once we got the consumer/producer code to compile, we tested it by inputting normal and edge case values for the numbers of threads requested.
+For instance, a normal run might request three producers and three consumers, or four producers and five consumers.
+An edge run might request one producer and 30 consumers (so the FIFO was usually empty) or 30 producers and two consumers (so the FIFO was almost always full).
+These edge cases helped us check if we implemented the mutexes correctly.
+With each of these tests, we manually checked the output to ensure that each struct was being produced and consumed correctly – for instance, if a struct was produced that contained a four and was supposed to sleep for eight seconds, we verified that thread that consumed it didn’t consume another struct until at least eight seconds later.
+
 
 \subsection{What did you learn?}
+In this assignment, we learned a lot about the various tools and resources we had to use: LaTeX, C (and its documentation), x86 Assembly (and its documentation), Git, Qemu, and the command line.
+We also learned how to effectively seek help in this class when we got stuck, whether it was from online resources, our peers, or from Kevin and the TAs.
+Finally, we refreshed our memories on how pthreads, mutexes, and synchronization work in C and how to effectively communicate between threads without them stepping over each other.
 
 
 \section{Version Control Log} 
