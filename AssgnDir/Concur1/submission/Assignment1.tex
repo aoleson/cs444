@@ -1,0 +1,217 @@
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage{hyperref}
+\usepackage{titling}
+\usepackage[normalem]{ulem}
+\useunder{\uline}{\ul}{}
+\usepackage{graphicx}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage{pstricks, pst-node}
+
+\usepackage[margin=0.5in]{geometry}
+\usepackage{listings}  
+\lstset{language=C}
+\geometry{textheight=8.5in, textwidth=6in}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+
+\def\name{Alannah Oleson, Jacob Mahugh}
+
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs444},
+  pdftitle = {CS 444 Project 1: Getting Acquainted},
+  pdfsubject = {CS 444 Project 1},
+  pdfpagemode = UseNone
+}
+
+\title{Project 1 - Getting Acquainted\\CS 444\\Fall 2017}
+\author{\name}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+   In this assignment, we got our first look at how to build a Linux kernel and run it in a virtual machine.
+   We set up our environment on the OS2 server and ensured that we could boot correctly.
+   We then examined the flags of the given qemu command.
+   Finally, we completed and analyzed our first concurrency assignment, learning how to leverage different threads to communicate through consumption and production of values.
+\end{abstract}
+
+\clearpage
+
+
+\section{Command Line Commands}
+
+\subsection{In Terminal 1}
+
+\begin{itemize}
+   \item cd /scratch/fall2017/30
+   \item git clone git://git.yoctoproject.org/linux-yocto-3.19
+   \item git branch v3.19.2
+   \item cp /scratch/files/environment-setup-i586-poky-linux .
+   \item cp /scratch/files/bzImage-qemux86.bin ./linux-yocto-3.19
+   \item cp /scratch/files/core-image-lsb-sdk-qemux86.ext4 ./linux-yocto-3.19
+   \item source environment-setup-i586-poky-linux
+   \item make -j4 all
+   \item qemu-system-i386 -gdb tcp::5530 -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext4, if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
+\end{itemize}
+
+\subsection{In Terminal 2}
+\begin{itemize}
+   \item gdb
+   \item file vmlinux
+   \item target remote :5530
+   \item Log in with root and no password.
+\end{itemize}
+
+
+
+\section{QEMU Command Line Flags}
+
+\begin{itemize}
+   \item gdb tcp::5530 : Open a gdb server on port 5530
+   \item S : Don’t start CPU immediately on startup
+   \item nographic : This allows us to debug the kernel without a VGA output (i.e. using the console instead). Usually QEMU uses SDL to output VGA, but using this flag disables graphical output entirely so that we can interact with it using only the command line
+   \item kernel bzImage-qemux86.bin : Define the image to be used for the kernel (in this case,  bzlmage-qemux86.bin)
+   \item drive file=core-image-lsb-sdk-qemux86.ext4, : Boot from something other than a CD-ROM (in this case, the file given – core-image-lib-sdk-qemux86.ext4)
+   \item if=virtio : Check if the virtio driver is available. If it is, we can use KVM
+   \item enable-kvm :  Enable KVM virtualization support. This only happens if KVM is actually supported while compiling (which we know from the previous command)
+   \item net none : Overrides the default configuration of -net nic -net user. This changes qemu such that no network devices should be configured
+   \item usb : Adds the USB device
+   \item localtime : Use the local time
+   \item no-reboot : Specifies that the system should exit instead of rebooting
+   \item append "root=/dev/vda rw console=ttyS0 debug" : Command line arguments for the kernel. In this case, it’s specifying the path for the root and various console configurations
+\end{itemize}
+
+
+\section{Concurrency Questions}
+
+\subsection{What do you think the main point of this assignment is?}
+The concurrency assignment's point was to remind us of the basic system programming concepts (which, for many of us, were learned over a year ago) while also challenging us to come up with our own take on the problem.
+We learned to use resources from the class page (like the semaphores book Kevin recommended) and online (like the documentation on pthreads) to come up with our solution.
+Since this class is after a summer where most of us didn’t program in C, it was also a nice way to get back into the language, and a good reminder of assembly code programming and the documentation available for that.
+In addition, concurrency problems are common in job interviews and are considered fair game in technical fields to ask about.
+By coming up with a solution for this variant of concurrency problem, we will be better able to adapt our model to future problems.
+
+
+The writeup introduced us to LaTeX, which will be useful not only in this class, but in architecture and capstone as well.
+Getting familiar with the process of writing LaTeX documents will serve us well in the future.
+
+
+Overall, this assignment was a great way to get us to be familiar enough with the tools and resources at our disposal to be successful in future assignments.
+For the first part of the assignment, we just had to get the kernel to boot up.
+However, to do this, we had to get familiar with the command line environment that we would be using on the os2 server.
+This showed us how to use resources like the QEMU documentation, the Linux man pages, the tutorials and templates on the course webpage, our peers, and of course Kevin and the TAs for when we got really stuck.
+In addition, it was a good refresher on how to set up and use git.
+Simply getting the kernel to boot felt like such an accomplishment that it will probably make us feel more comfortable messing around with it on future assignments.
+It also showed us what a successful boot looked like, so that in the future we would know when ours went wrong.
+
+
+\subsection{How did you personally approach the problem? Design decisions, algorithm, etc.}
+We started by recalling that when we used pthreads in OS1, we had to lock and unlock them using mutexes to ensure that the data being passed between them didn't get corrupted.
+This led us to look up our code from OS1 and see how we used mutexes previously.
+The file pthreadhello.c on the course site was also a good minimal example that we referenced when programming.
+
+Then, we considered what would be the best way to structure our program, given that we had to have multiple consumer threads and one (or more) producer threads.
+The key decision we made here was to use a queue (FIFO) to hold the data structures that would house the struct's value and sleep time.
+This way, we could have the producers storing items in the FIFO, and the consumers would read from the FIFO in the order in which the structs were put in.
+To ensure the threads didn't step on each other’s toes, we decided to use a mutex on the FIFO that would only allow one thread to access it at a time.
+When a producer wanted to write to the FIFO, it would wait until it could lock the mutex, write, then unlock the mutex.
+A consumer would do the same for reading from the FIFO.
+
+We decided to spawn the producer and consumer threads within the main process.
+Towards this end, we have different functions for each category of thread to run: one for the producers, which creates a randomly filled struct and sticks it in the FIFO, and one for the consumers, which receives a randomly filled struct from the FIFO and prints out its information after sleeping.
+We have for-loops that spawn the requested number of each thread with the correct function call.
+
+Inside the functions that the threads run, we found that we had to implement a double-check on the locking mutex to ensure that it was actually locked.
+We discovered this when, rarely, two threads would attempt to lock the mutex at the same time.
+One would receive the lock and the other would hang, but both would try to execute the subsequent code as if it had the lock.
+Obviously, the thread without the lock would not function correctly, so we added a few lines to check if the lock had been successful to avoid this situation.
+
+To optimize the program slightly, we chose to add special while loops before the mutex lock attempts in both the consumer and producer threads.
+These loops do not have a body, but they check to see if the number of items in the FIFO is greater than the maximum (producerAction()) or if the FIFO is empty (consumerAction()).
+These loops prevent an edge case error: namely, that consumer threads could lock the mutex when there were no structs to be consumed, or vice versa when the FIFO was full.
+With the loops, the other category of thread is guaranteed to get a chance to lock the mutex and do what needs to be done.
+
+One problem that we ran into was the fact that the functions that the threads called had to implemented with void pointers in place of typed pointers.
+Initially, we tried to just pass the structs and arguments as normal.
+However, we were able to realize the error by checking pthread documentation.
+We had a few syntax issues with how to typecast structs after that, but were able to figure it out quickly enough.
+
+
+\subsection{How did you ensure your solution was correct? Testing details, for instance.}
+Since part of the assignment involved using different random number generation methods depending on what the system supported, we started by implementing and testing that.
+Because we were coding on the OS2 server, we tested our Mersenne Twister implementation first.
+We did this by generating 50 random numbers within the range 2-12 using our method and printing them out.
+We then checked them to ensure that the edges of the range were being generated, as well as a decent sample of the numbers inside the range.
+We used the same method to test our rdrand implementation, except that instead of running it on the server, we ran it on our local machine that supported the instruction.
+
+Once we got the consumer/producer code to compile, we tested it by inputting normal and edge case values for the numbers of threads requested.
+For instance, a normal run might request three producers and three consumers, or four producers and five consumers.
+An edge run might request one producer and 30 consumers (so the FIFO was usually empty) or 30 producers and two consumers (so the FIFO was almost always full).
+These edge cases helped us check if we implemented the mutexes correctly.
+With each of these tests, we manually checked the output to ensure that each struct was being produced and consumed correctly – for instance, if a struct was produced that contained a four and was supposed to sleep for eight seconds, we verified that thread that consumed it didn’t consume another struct until at least eight seconds later.
+
+
+\subsection{What did you learn?}
+In this assignment, we learned a lot about the various tools and resources we had to use: LaTeX, C (and its documentation), x86 Assembly (and its documentation), Git, Qemu, and the command line.
+We also learned how to effectively seek help in this class when we got stuck, whether it was from online resources, our peers, or from Kevin and the TAs.
+Finally, we refreshed our memories on how pthreads, mutexes, and synchronization work in C and how to effectively communicate between threads without them stepping over each other.
+
+
+\section{Version Control Log} 
+
+\input{changelog.tex}
+
+
+\section{Work Log}
+
+\begin{tabular}{ |p{2.5cm}|p{2.5cm}|p{9cm}| } 
+   \hline
+   Date & Time & Description \\
+   \hline
+   10/2/2017 & 12-1pm & Met for the first time to look over the assignment and discuss. Tried to set up the environment using the commands given in class and assignment instructions. We weren't successful after an hour of trying, and then we had to leave for class.\\
+   \hline
+   10/4/2017 & 10am-1pm & Met again to set up the environment after wiping our group folder so that we had a clean slate. We got help from a former OS2 student to understand the order in which the commands should be entered. Once we finished that, which took about an hour, we started designing the concurrency problem. Decided on a FIFO to hold our structs and sketched out the high level pseudocode for the main process and the threads.\\
+   \hline
+   10/4/2017 & 6-6:30pm & Set up a GitHub repository to back up our work. Ran into a couple problems with the ssh keys, but was able to figure it out within ten minutes. Initial commit of files to repo.\\
+   \hline
+   10/6/2017 & 9am-12pm & Met to start actually programming the concurrency assignment. Reviewed our design to ensure it still made sense after coming back to it. Implemented and tested the random number generation for both the Mersenne Twister and the rdrand variants. Began implementing the producer and consumer threads functions. Began creating the LaTeX file for the writeup, but had a lot of problems getting it to compile due to lack of familiarity with LaTeX, so didn't get very far.\\
+   \hline
+   10/7/2017 & 10am-1pm & Finished implementing the concurrency problem. Manually tested and debugged to ensure correctness.\\
+   \hline
+   10/7/2017 & 7-8:30pm & Started to answer the writeup questions in a Word document due to a lack of reliable Internet connection for the weekend (and thus no OS2 server access for LaTeX). Answered most of the longform questions at a high level, leaving some details to be checked later. Looked up the QEMU flags by scrolling through the ridiculously long documentation page (singular) on a ridiculously small phone.\\
+   \hline
+   10/8/2017 & 10am-11:30pm & Got back to civilization and filled in the missing writeup details. Began transferring the answers to the LaTeX template file on the server. Had to look up a lot of documentation on LaTeX to get the file to compile. Created a script to pull in a git log each time the PDF was made and insert it into the writeup.\\
+   \hline
+   10/8/2017 & 3-4pm & Met to fill in the last details on the writeup and ensure the program functioned correctly. Discussed writeup answers, readme, and final code cleanup. Created a Makefile for the concurrency problem files.\\
+   \hline
+   10/8/2017 & 6-9pm & Finished the writeup file. Cleaned up the TeX directory and merged Makefile with the concurrency Makefile.\\
+   \hline
+\end{tabular}
+
+
+
+\end{document}
