@@ -96,6 +96,21 @@
 
 \section{QEMU Command Line Flags}
 
+\begin{itemize}
+   \item gdb tcp::5530 : Open a gdb server on port 5530
+   \item S : Don’t start CPU immediately on startup
+   \item nographic : This allows us to debug the kernel without a VGA output (i.e. using the console instead). Usually QEMU uses SDL to output VGA, but using this flag disables graphical output entirely so that we can interact with it using only the command line
+   \item kernel bzImage-qemux86.bin : Define the image to be used for the kernel (in this case,  bzlmage-qemux86.bin)
+   \item drive file=core-image-lsb-sdk-qemux86.ext4, : Boot from something other than a CD-ROM (in this case, the file given – core-image-lib-sdk-qemux86.ext4)
+   \item if=virtio : Check if the virtio driver is available. If it is, we can use KVM
+   \item enable-kvm :  Enable KVM virtualization support. This only happens if KVM is actually supported while compiling (which we know from the previous command)
+   \item net none : Overrides the default configuration of -net nic -net user. This changes qemu such that no network devices should be configured
+   \item usb : Adds the USB device
+   \item localtime : Use the local time
+   \item no-reboot : Specifies that the system should exit instead of rebooting
+   \item append "root=/dev/vda rw console=ttyS0 debug" : Command line arguments for the kernel. In this case, it’s specifying the path for the root and various console configurations
+\end{itemize}
+
 
 \section{Concurrency Questions}
 
