@@ -1,1 +1,0 @@
-cmd_drivers/message/i2o/i2o_core.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o drivers/message/i2o/i2o_core.ko drivers/message/i2o/i2o_core.o drivers/message/i2o/i2o_core.mod.o

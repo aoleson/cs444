@@ -1,1 +1,0 @@
-cmd_drivers/media/usb/gspca/gspca_sonixb.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o drivers/media/usb/gspca/gspca_sonixb.ko drivers/media/usb/gspca/gspca_sonixb.o drivers/media/usb/gspca/gspca_sonixb.mod.o
