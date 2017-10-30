@@ -181,11 +181,6 @@ deps_drivers/virtio/virtio.o := \
     $(wildcard include/config/x86/internode/cache/shift.h) \
     $(wildcard include/config/x86/vsmp.h) \
   include/linux/dynamic_debug.h \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
   arch/x86/include/asm/div64.h \
   include/linux/mm.h \
     $(wildcard include/config/need/multiple/nodes.h) \
@@ -210,6 +205,11 @@ deps_drivers/virtio/virtio.o := \
     $(wildcard include/config/hibernation.h) \
     $(wildcard include/config/memory/hotplug.h) \
     $(wildcard include/config/hugetlbfs.h) \
+  include/linux/errno.h \
+  include/uapi/linux/errno.h \
+  arch/x86/include/uapi/asm/errno.h \
+  include/uapi/asm-generic/errno.h \
+  include/uapi/asm-generic/errno-base.h \
   include/linux/mmdebug.h \
     $(wildcard include/config/debug/vm.h) \
     $(wildcard include/config/debug/virtual.h) \

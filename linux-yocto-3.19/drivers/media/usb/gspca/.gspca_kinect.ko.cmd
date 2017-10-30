@@ -1,1 +1,1 @@
-cmd_drivers/media/usb/gspca/gspca_kinect.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o drivers/media/usb/gspca/gspca_kinect.ko drivers/media/usb/gspca/gspca_kinect.o drivers/media/usb/gspca/gspca_kinect.mod.o
+cmd_drivers/media/usb/gspca/gspca_kinect.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o drivers/media/usb/gspca/gspca_kinect.ko drivers/media/usb/gspca/gspca_kinect.o drivers/media/usb/gspca/gspca_kinect.mod.o

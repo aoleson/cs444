@@ -1,0 +1,3 @@
+maybe add this line to .config ~ 323
+
+CONFIG_DEFAULT_IOSCHED="sstf"

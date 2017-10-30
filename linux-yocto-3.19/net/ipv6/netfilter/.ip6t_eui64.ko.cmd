@@ -1,1 +1,1 @@
-cmd_net/ipv6/netfilter/ip6t_eui64.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/ipv6/netfilter/ip6t_eui64.ko net/ipv6/netfilter/ip6t_eui64.o net/ipv6/netfilter/ip6t_eui64.mod.o
+cmd_net/ipv6/netfilter/ip6t_eui64.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/ipv6/netfilter/ip6t_eui64.ko net/ipv6/netfilter/ip6t_eui64.o net/ipv6/netfilter/ip6t_eui64.mod.o

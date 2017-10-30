@@ -228,11 +228,6 @@ deps_mm/balloon_compaction.o := \
     $(wildcard include/config/x86/internode/cache/shift.h) \
     $(wildcard include/config/x86/vsmp.h) \
   include/linux/dynamic_debug.h \
-  include/linux/string.h \
-    $(wildcard include/config/binary/printf.h) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
   arch/x86/include/asm/div64.h \
   arch/x86/include/asm/preempt.h \
   arch/x86/include/asm/percpu.h \
@@ -258,6 +253,11 @@ deps_mm/balloon_compaction.o := \
   arch/x86/include/asm/page.h \
   arch/x86/include/asm/page_32.h \
     $(wildcard include/config/x86/3dnow.h) \
+  include/linux/string.h \
+    $(wildcard include/config/binary/printf.h) \
+  include/uapi/linux/string.h \
+  arch/x86/include/asm/string.h \
+  arch/x86/include/asm/string_32.h \
   include/linux/range.h \
   include/asm-generic/memory_model.h \
   include/asm-generic/getorder.h \

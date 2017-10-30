@@ -181,16 +181,6 @@ deps_drivers/virtio/virtio_mmio.o := \
     $(wildcard include/config/x86/internode/cache/shift.h) \
     $(wildcard include/config/x86/vsmp.h) \
   include/linux/dynamic_debug.h \
-  include/linux/string.h \
-    $(wildcard include/config/binary/printf.h) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
   arch/x86/include/asm/div64.h \
   include/linux/spinlock.h \
     $(wildcard include/config/debug/spinlock.h) \
@@ -227,6 +217,11 @@ deps_drivers/virtio/virtio_mmio.o := \
     $(wildcard include/config/debug/virtual.h) \
     $(wildcard include/config/flatmem.h) \
     $(wildcard include/config/x86/3dnow.h) \
+  include/linux/string.h \
+    $(wildcard include/config/binary/printf.h) \
+  include/uapi/linux/string.h \
+  arch/x86/include/asm/string.h \
+  arch/x86/include/asm/string_32.h \
   include/linux/range.h \
   include/asm-generic/memory_model.h \
     $(wildcard include/config/discontigmem.h) \
@@ -249,6 +244,9 @@ deps_drivers/virtio/virtio_mmio.o := \
   arch/x86/include/uapi/asm/ioctl.h \
   include/asm-generic/ioctl.h \
   include/uapi/asm-generic/ioctl.h \
+  arch/x86/include/uapi/asm/errno.h \
+  include/uapi/asm-generic/errno.h \
+  include/uapi/asm-generic/errno-base.h \
   arch/x86/include/asm/cpumask.h \
   include/linux/cpumask.h \
     $(wildcard include/config/cpumask/offstack.h) \
@@ -392,6 +390,8 @@ deps_drivers/virtio/virtio_mmio.o := \
   include/linux/mmdebug.h \
     $(wildcard include/config/debug/vm.h) \
   include/linux/smp.h \
+  include/linux/errno.h \
+  include/uapi/linux/errno.h \
   arch/x86/include/asm/smp.h \
     $(wildcard include/config/x86/io/apic.h) \
     $(wildcard include/config/x86/32/smp.h) \

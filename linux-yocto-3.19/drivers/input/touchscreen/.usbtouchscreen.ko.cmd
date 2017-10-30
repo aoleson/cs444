@@ -1,1 +1,1 @@
-cmd_drivers/input/touchscreen/usbtouchscreen.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o drivers/input/touchscreen/usbtouchscreen.ko drivers/input/touchscreen/usbtouchscreen.o drivers/input/touchscreen/usbtouchscreen.mod.o
+cmd_drivers/input/touchscreen/usbtouchscreen.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o drivers/input/touchscreen/usbtouchscreen.ko drivers/input/touchscreen/usbtouchscreen.o drivers/input/touchscreen/usbtouchscreen.mod.o

@@ -1,4 +1,4 @@
-cmd_arch/x86/boot/compressed/eboot.o := gcc -Wp,-MD,arch/x86/boot/compressed/.eboot.o.d  -nostdinc -isystem /usr/lib/gcc/x86_64-redhat-linux/4.8.5/include -I./arch/x86/include -Iarch/x86/include/generated/uapi -Iarch/x86/include/generated  -Iinclude -I./arch/x86/include/uapi -Iarch/x86/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -m32 -D__KERNEL__ -O2 -fno-strict-aliasing -fPIC -DDISABLE_BRANCH_PROFILING -march=i386 -mno-mmx -mno-sse -ffreestanding -fno-stack-protector -fshort-wchar -mno-red-zone    -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(eboot)"  -D"KBUILD_MODNAME=KBUILD_STR(eboot)" -c -o arch/x86/boot/compressed/eboot.o arch/x86/boot/compressed/eboot.c
+cmd_arch/x86/boot/compressed/eboot.o := i586-poky-linux-gcc -Wp,-MD,arch/x86/boot/compressed/.eboot.o.d  -nostdinc -isystem /scratch/opt/poky/1.8/sysroots/i686-pokysdk-linux/usr/bin/i586-poky-linux/../../lib/i586-poky-linux/gcc/i586-poky-linux/4.9.2/include -I./arch/x86/include -Iarch/x86/include/generated/uapi -Iarch/x86/include/generated  -Iinclude -I./arch/x86/include/uapi -Iarch/x86/include/generated/uapi -I./include/uapi -Iinclude/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -m32 -D__KERNEL__ -O2 -fno-strict-aliasing -fPIC -DDISABLE_BRANCH_PROFILING -march=i386 -mno-mmx -mno-sse -ffreestanding -fno-stack-protector -fshort-wchar -mno-red-zone    -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(eboot)"  -D"KBUILD_MODNAME=KBUILD_STR(eboot)" -c -o arch/x86/boot/compressed/eboot.o arch/x86/boot/compressed/eboot.c
 
 source_arch/x86/boot/compressed/eboot.o := arch/x86/boot/compressed/eboot.c
 
@@ -50,7 +50,7 @@ deps_arch/x86/boot/compressed/eboot.o := \
     $(wildcard include/config/phys/addr/t/64bit.h) \
   include/linux/string.h \
     $(wildcard include/config/binary/printf.h) \
-  /usr/lib/gcc/x86_64-redhat-linux/4.8.5/include/stdarg.h \
+  /scratch/opt/poky/1.8/sysroots/i686-pokysdk-linux/usr/lib/i586-poky-linux/gcc/i586-poky-linux/4.9.2/include/stdarg.h \
   include/uapi/linux/string.h \
   arch/x86/include/asm/string.h \
   arch/x86/include/asm/string_32.h \
@@ -188,11 +188,6 @@ deps_arch/x86/boot/compressed/eboot.o := \
     $(wildcard include/config/dynamic/debug.h) \
   include/linux/kern_levels.h \
   include/linux/dynamic_debug.h \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
   arch/x86/include/asm/div64.h \
   arch/x86/include/asm/preempt.h \
   arch/x86/include/asm/percpu.h \
@@ -242,6 +237,9 @@ deps_arch/x86/boot/compressed/eboot.o := \
   arch/x86/include/uapi/asm/ioctl.h \
   include/asm-generic/ioctl.h \
   include/uapi/asm-generic/ioctl.h \
+  arch/x86/include/uapi/asm/errno.h \
+  include/uapi/asm-generic/errno.h \
+  include/uapi/asm-generic/errno-base.h \
   arch/x86/include/asm/cpumask.h \
   include/linux/cpumask.h \
     $(wildcard include/config/cpumask/offstack.h) \
@@ -398,6 +396,8 @@ deps_arch/x86/boot/compressed/eboot.o := \
   include/linux/mmdebug.h \
     $(wildcard include/config/debug/vm.h) \
   include/linux/smp.h \
+  include/linux/errno.h \
+  include/uapi/linux/errno.h \
   arch/x86/include/asm/smp.h \
     $(wildcard include/config/x86/io/apic.h) \
     $(wildcard include/config/x86/32/smp.h) \

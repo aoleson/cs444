@@ -1,1 +1,1 @@
-cmd_net/bridge/netfilter/ebt_802_3.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/bridge/netfilter/ebt_802_3.ko net/bridge/netfilter/ebt_802_3.o net/bridge/netfilter/ebt_802_3.mod.o
+cmd_net/bridge/netfilter/ebt_802_3.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/bridge/netfilter/ebt_802_3.ko net/bridge/netfilter/ebt_802_3.o net/bridge/netfilter/ebt_802_3.mod.o

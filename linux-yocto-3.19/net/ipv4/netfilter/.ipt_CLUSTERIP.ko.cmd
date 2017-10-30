@@ -1,1 +1,1 @@
-cmd_net/ipv4/netfilter/ipt_CLUSTERIP.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/ipv4/netfilter/ipt_CLUSTERIP.ko net/ipv4/netfilter/ipt_CLUSTERIP.o net/ipv4/netfilter/ipt_CLUSTERIP.mod.o
+cmd_net/ipv4/netfilter/ipt_CLUSTERIP.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/ipv4/netfilter/ipt_CLUSTERIP.ko net/ipv4/netfilter/ipt_CLUSTERIP.o net/ipv4/netfilter/ipt_CLUSTERIP.mod.o

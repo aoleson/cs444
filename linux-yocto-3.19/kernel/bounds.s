@@ -1,17 +1,19 @@
 	.file	"bounds.c"
-# GNU C (GCC) version 4.8.5 20150623 (Red Hat 4.8.5-11) (x86_64-redhat-linux)
-#	compiled by GNU C version 4.8.5 20150623 (Red Hat 4.8.5-11), GMP version 6.0.0, MPFR version 3.1.1, MPC version 1.0.1
+# GNU C (GCC) version 4.9.2 (i586-poky-linux)
+#	compiled by GNU C version 4.9.2, GMP version 6.0.0, MPFR version 3.1.2, MPC version 1.0.2
 # GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 # options passed:  -nostdinc -I ./arch/x86/include
 # -I arch/x86/include/generated/uapi -I arch/x86/include/generated
 # -I include -I ./arch/x86/include/uapi -I arch/x86/include/generated/uapi
-# -I ./include/uapi -I include/generated/uapi -imultilib 32 -D __KERNEL__
+# -I ./include/uapi -I include/generated/uapi
+# -iprefix /scratch/opt/poky/1.8/sysroots/i686-pokysdk-linux/usr/bin/i586-poky-linux/../../lib/i586-poky-linux/gcc/i586-poky-linux/4.9.2/
+# -isysroot /scratch/opt/poky/1.8/sysroots/i586-poky-linux -D __KERNEL__
 # -D CONFIG_AS_CFI=1 -D CONFIG_AS_CFI_SIGNAL_FRAME=1
 # -D CONFIG_AS_CFI_SECTIONS=1 -D CONFIG_AS_CRC32=1 -D CONFIG_AS_AVX=1
 # -D CONFIG_AS_AVX2=1 -D CC_HAVE_ASM_GOTO -D KBUILD_STR(s)=#s
 # -D KBUILD_BASENAME=KBUILD_STR(bounds)
 # -D KBUILD_MODNAME=KBUILD_STR(bounds)
-# -isystem /usr/lib/gcc/x86_64-redhat-linux/4.8.5/include
+# -isystem /scratch/opt/poky/1.8/sysroots/i686-pokysdk-linux/usr/bin/i586-poky-linux/../../lib/i586-poky-linux/gcc/i586-poky-linux/4.9.2/include
 # -include ./include/linux/kconfig.h -MD kernel/.bounds.s.d kernel/bounds.c
 # -m32 -msoft-float -mregparm=3 -mpreferred-stack-boundary=2 -march=i686
 # -mtune=pentium3 -mtune=generic -maccumulate-outgoing-args -mno-sse
@@ -20,56 +22,65 @@
 # -Werror=implicit-function-declaration -Wno-format-security
 # -Wno-sign-compare -Wframe-larger-than=1024 -Wno-unused-but-set-variable
 # -Wdeclaration-after-statement -Wno-pointer-sign -Werror=implicit-int
-# -Werror=strict-prototypes -std=gnu90 -p -fno-strict-aliasing -fno-common
-# -freg-struct-return -fno-pic -ffreestanding
-# -fno-asynchronous-unwind-tables -fno-delete-null-pointer-checks
-# -fno-stack-protector -fno-omit-frame-pointer -fno-optimize-sibling-calls
+# -Werror=strict-prototypes -Werror=date-time -std=gnu90 -p
+# -fno-strict-aliasing -fno-common -freg-struct-return -fno-pic
+# -ffreestanding -fno-asynchronous-unwind-tables
+# -fno-delete-null-pointer-checks -fno-stack-protector
+# -fno-omit-frame-pointer -fno-optimize-sibling-calls
 # -fno-var-tracking-assignments -fno-strict-overflow -fconserve-stack
 # -fverbose-asm --param allow-store-data-races=0
 # options enabled:  -faggressive-loop-optimizations -fauto-inc-dec
 # -fbranch-count-reg -fcaller-saves -fcombine-stack-adjustments
 # -fcompare-elim -fcprop-registers -fcrossjumping -fcse-follow-jumps
-# -fdefer-pop -fdevirtualize -fdwarf2-cfi-asm -fearly-inlining
-# -feliminate-unused-debug-types -fexpensive-optimizations
+# -fdefer-pop -fdevirtualize -fdevirtualize-speculatively -fdwarf2-cfi-asm
+# -fearly-inlining -feliminate-unused-debug-types -fexpensive-optimizations
 # -fforward-propagate -ffunction-cse -fgcse -fgcse-lm -fgnu-runtime
 # -fgnu-unique -fguess-branch-probability -fhoist-adjacent-loads -fident
 # -fif-conversion -fif-conversion2 -findirect-inlining -finline
 # -finline-atomics -finline-functions-called-once -finline-small-functions
 # -fipa-cp -fipa-profile -fipa-pure-const -fipa-reference -fipa-sra
 # -fira-hoist-pressure -fira-share-save-slots -fira-share-spill-slots
-# -fivopts -fkeep-static-consts -fleading-underscore -fmath-errno
-# -fmerge-constants -fmerge-debug-strings -fmove-loop-invariants
-# -foptimize-register-move -foptimize-strlen -fpartial-inlining -fpeephole
+# -fisolate-erroneous-paths-dereference -fivopts -fkeep-static-consts
+# -fleading-underscore -fmath-errno -fmerge-constants -fmerge-debug-strings
+# -fmove-loop-invariants -foptimize-strlen -fpartial-inlining -fpeephole
 # -fpeephole2 -fprefetch-loop-arrays -fprofile -free -freg-struct-return
-# -fregmove -freorder-blocks -freorder-functions -frerun-cse-after-loop
-# -fsched-critical-path-heuristic -fsched-dep-count-heuristic
-# -fsched-group-heuristic -fsched-interblock -fsched-last-insn-heuristic
-# -fsched-rank-heuristic -fsched-spec -fsched-spec-insn-heuristic
-# -fsched-stalled-insns-dep -fschedule-insns2 -fshow-column -fshrink-wrap
-# -fsigned-zeros -fsplit-ivs-in-unroller -fsplit-wide-types
-# -fstrict-volatile-bitfields -fsync-libcalls -fthread-jumps
-# -ftoplevel-reorder -ftrapping-math -ftree-bit-ccp -ftree-builtin-call-dce
-# -ftree-ccp -ftree-ch -ftree-coalesce-vars -ftree-copy-prop
-# -ftree-copyrename -ftree-cselim -ftree-dce -ftree-dominator-opts
-# -ftree-dse -ftree-forwprop -ftree-fre -ftree-loop-if-convert
-# -ftree-loop-im -ftree-loop-ivcanon -ftree-loop-optimize
-# -ftree-parallelize-loops= -ftree-phiprop -ftree-pre -ftree-pta
-# -ftree-reassoc -ftree-scev-cprop -ftree-sink -ftree-slp-vectorize
-# -ftree-slsr -ftree-sra -ftree-switch-conversion -ftree-tail-merge
-# -ftree-ter -ftree-vect-loop-version -ftree-vrp -funit-at-a-time
-# -fvar-tracking -fverbose-asm -fzero-initialized-in-bss -m32
-# -m96bit-long-double -maccumulate-outgoing-args -malign-stringops -mglibc
+# -freorder-blocks -freorder-blocks-and-partition -freorder-functions
+# -frerun-cse-after-loop -fsched-critical-path-heuristic
+# -fsched-dep-count-heuristic -fsched-group-heuristic -fsched-interblock
+# -fsched-last-insn-heuristic -fsched-rank-heuristic -fsched-spec
+# -fsched-spec-insn-heuristic -fsched-stalled-insns-dep -fschedule-insns2
+# -fshow-column -fshrink-wrap -fsigned-zeros -fsplit-ivs-in-unroller
+# -fsplit-wide-types -fstrict-volatile-bitfields -fsync-libcalls
+# -fthread-jumps -ftoplevel-reorder -ftrapping-math -ftree-bit-ccp
+# -ftree-builtin-call-dce -ftree-ccp -ftree-ch -ftree-coalesce-vars
+# -ftree-copy-prop -ftree-copyrename -ftree-cselim -ftree-dce
+# -ftree-dominator-opts -ftree-dse -ftree-forwprop -ftree-fre
+# -ftree-loop-if-convert -ftree-loop-im -ftree-loop-ivcanon
+# -ftree-loop-optimize -ftree-parallelize-loops= -ftree-phiprop -ftree-pre
+# -ftree-pta -ftree-reassoc -ftree-scev-cprop -ftree-sink -ftree-slsr
+# -ftree-sra -ftree-switch-conversion -ftree-tail-merge -ftree-ter
+# -ftree-vrp -funit-at-a-time -fvar-tracking -fverbose-asm
+# -fzero-initialized-in-bss -m32 -m96bit-long-double
+# -maccumulate-outgoing-args -malign-stringops
+# -mavx256-split-unaligned-load -mavx256-split-unaligned-store -mglibc
 # -mieee-fp -mlong-double-80 -mno-fancy-math-387 -mno-red-zone -mno-sse4
-# -mpush-args -msahf -mtls-direct-seg-refs
+# -mpush-args -msahf -mtls-direct-seg-refs -mvzeroupper
 
 	.text
 .Ltext0:
 	.cfi_sections	.debug_frame
+	.section	.text.unlikely,"ax",@progbits
+.LCOLDB0:
+	.text
+.LHOTB0:
 	.p2align 4,,15
+	.section	.text.unlikely
+.Ltext_cold0:
+	.text
 	.globl	foo
 	.type	foo, @function
 foo:
-.LFB179:
+.LFB169:
 	.file 1 "kernel/bounds.c"
 	.loc 1 16 0
 	.cfi_startproc
@@ -108,9 +119,15 @@ foo:
 	.cfi_def_cfa 4, 4
 	ret
 	.cfi_endproc
-.LFE179:
+.LFE169:
 	.size	foo, .-foo
+	.section	.text.unlikely
+.LCOLDE0:
+	.text
+.LHOTE0:
 .Letext0:
+	.section	.text.unlikely
+.Letext_cold0:
 	.file 2 "include/uapi/asm-generic/int-ll64.h"
 	.file 3 "include/linux/types.h"
 	.file 4 "include/linux/page-flags.h"
@@ -325,8 +342,8 @@ foo:
 	.string	"foo"
 	.byte	0x1
 	.byte	0xf
-	.long	.LFB179
-	.long	.LFE179-.LFB179
+	.long	.LFB169
+	.long	.LFE169-.LFB169
 	.uleb128 0x1
 	.byte	0x9c
 	.uleb128 0x9
@@ -645,13 +662,6 @@ foo:
 	.string	"PG_arch_1"
 .LASF1:
 	.string	"unsigned char"
-.LASF59:
-	.ascii	"GNU C 4.8.5 20150623 (Red Hat 4.8.5-11) -m32 -msoft-float -m"
-	.ascii	"regparm=3 -mpreferred-stack-boundary=2 -march=i686 -mtune=pe"
-	.ascii	"ntium3 -mtune=generic -maccumulate-outgoing-args -mno-sse -m"
-	.ascii	"no-mmx -mno-sse2 -mno-3dnow -mno-avx -g -O2 -std=gnu90 -p -f"
-	.ascii	"no-strict-aliasing -fno-common -freg-struct-return -fno-"
-	.string	"pic -ffreestanding -fno-asynchronous-unwind-tables -fno-delete-null-pointer-checks -fno-stack-protector -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -fno-strict-overflow -fconserve-stack --param allow-store-data-races=0"
 .LASF19:
 	.string	"PG_uptodate"
 .LASF37:
@@ -672,6 +682,13 @@ foo:
 	.string	"PG_referenced"
 .LASF20:
 	.string	"PG_dirty"
+.LASF59:
+	.ascii	"GNU C 4.9.2 -m32 -msoft-float -mregparm=3 -mpreferred-stack-"
+	.ascii	"boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -maccu"
+	.ascii	"mulate-outgoing-args -mno-sse -mno-mmx -mno-sse2 -mno-3dnow "
+	.ascii	"-mno-avx -g -O2 -std=gnu90 -p -fno-strict-aliasing -fno-comm"
+	.ascii	"on -freg-struct-return -fno-"
+	.string	"pic -ffreestanding -fno-asynchronous-unwind-tables -fno-delete-null-pointer-checks -fno-stack-protector -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -fno-strict-overflow -fconserve-stack --param allow-store-data-races=0"
 .LASF5:
 	.string	"short unsigned int"
 .LASF40:
@@ -720,5 +737,5 @@ foo:
 	.string	"PG_savepinned"
 .LASF58:
 	.string	"hex_asc_upper"
-	.ident	"GCC: (GNU) 4.8.5 20150623 (Red Hat 4.8.5-11)"
+	.ident	"GCC: (GNU) 4.9.2"
 	.section	.note.GNU-stack,"",@progbits

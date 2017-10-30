@@ -1,1 +1,1 @@
-cmd_net/ipv6/netfilter/ip6t_ipv6header.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/ipv6/netfilter/ip6t_ipv6header.ko net/ipv6/netfilter/ip6t_ipv6header.o net/ipv6/netfilter/ip6t_ipv6header.mod.o
+cmd_net/ipv6/netfilter/ip6t_ipv6header.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/ipv6/netfilter/ip6t_ipv6header.ko net/ipv6/netfilter/ip6t_ipv6header.o net/ipv6/netfilter/ip6t_ipv6header.mod.o
