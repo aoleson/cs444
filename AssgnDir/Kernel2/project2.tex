@@ -1,0 +1,240 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage{enumitem}
+%\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+
+% Code listing and colors
+\usepackage{listings}  
+\usepackage{color}
+\lstset{
+	language=C,
+	basicstyle=\ttfamily,
+	keywordstyle=\color{blue}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	commentstyle=\color{green}\ttfamily,
+	morecomment=[l][\color{magenta}]{\#}
+}
+% End code listing setup
+
+\geometry{textheight=8.5in, textwidth=6in}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Alannah Oleson, Jacob Mahugh}
+
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {},
+  pdftitle = {CS 444 Assignment 2},
+  pdfsubject = {CS 444 Assignment 2},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\vspace*{4cm}
+	{\scshape\huge Project 2: I/O Elevators\par}
+	\vspace{1cm}
+	{\scshape\LARGE CS 444: Operating Systems II\par}
+	\vspace{0.5cm}
+	{\large\bfseries Fall 2017\par}
+	{\large Abstract\par}
+	\vspace {0.5cm}
+	In the second kernel assignment we implement an SSTF scheduler using the
+	C-LOOK elevator algorithm. This document covers our implementation's changes,
+	including how to boot up the kernel. This document also discusses our philosophy
+	in designing the solution and what we learned from the process.
+	\par
+	\vspace{1cm}
+	{\Large\itshape Jacob Mahugh\par}
+    \vspace {0.5cm}
+    {\Large\itshape Alannah Oleson\par}
+	\vfill
+	{\large \today\par}	
+\end{titlepage}
+
+
+
+\section{Program Design}
+Assignment 2 asked us to implement an SSTF (shortest seek time first) scheduler for the kernel using the C-LOOK elevator algorithm. 
+As each request to move the head comes in, the scheduler places it into a queue. 
+The request is inserted into the queue based upon the sector it is accessing.
+If the request is adjacent to another request for a sector already in the queue, the two are merged to increase the efficiency of reading and writing.
+When the request reaches the front of the queue, it is dispatched.
+The dispatcher takes care of handling any errors that occur in the request and removes it from the queue if the process is finished.
+
+Our implementation specifically changes the way that the request is placed into the queue to ensure that the resulting schedule is SSTF
+(in fact, this is where many of the kernel's schedulers differ from each other).
+In our SSTF implementation, we keep the queue sorted in increasing order by insertion-sorting each request as it comes in.
+This allows us to assume that the queue is in order as we traverse it, and since the queues here are actually circularly linked lists, we can just iterate through the list to dispatch requests in the right order.
+
+We were given the option to implement this scheduler using either the LOOK or C-LOOK algorithms.
+In our research, we found that the queue is stored as a circularly linked list. 
+This led us to implement CLOOK, since our algorithm could simply continue to traverse through the circularly linked list and would not require keeping track of the list head or tail.
+
+\section{Version Control and Work Log}
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3cm}|p{2cm}|p{2cm}|p{3cm}|p{2cm}|}
+\hline
+Description                                                                                              & Start time       & End (commit) time              & Commit number (if relevant)              & Author       \\
+\hline
+Cleaning up the kprint statements                                                                        & Mon Oct 30 17:00 & Mon Oct 30 18:02:06 2017 -0700 & 63aff2f837551 dcb576b7d0dd262 e0a953f17ed9 & aoleson      \\
+\hline
+cleaning up yocto directory target files                                                                 & Mon Oct 30 16:35 & Mon Oct 30 16:42:32 2017 -0700 & 67d36e7c4f922 20340a90f0831aa d458b3473194 & aoleson      \\
+\hline
+Committing full yocto directory. Ensures we get all the changes from the menuconfig options              & Mon Oct 30 16:30 & Mon Oct 30 16:31:46 2017 -0700 & 7eb6b4a42c3a8 6088ffe19119229 53076afaba98 & aoleson      \\
+\hline
+Tested working sstf files. Need to clean up kprints though                                               & Mon Oct 30 11:00 & Mon Oct 30 16:28:35 2017 -0700 & b4552cff631ae ebe7cff247b8892 8565d5dcfd01 & aoleson      \\
+\hline
+Added intial sstf-iosched.c as cp of noop                                                                & Fri Oct 27 10:00 & Fri Oct 27 10:52:56 2017 -0700 & 6e64485efc30e f2607f20b1c5ea5 8055b47971b8 & Jacob Mahugh \\
+\hline
+Basic file structure for concurreny asgn 2; notes on Arbitrator(waiter) solution implementation in code. & Thu Oct 26 07:00 & Thu Oct 26 09:10:39 2017 -0700 & ca40083ddeb61 780e828f0c19f92 d11cc997268c & Jacob Mahugh \\
+\hline
+Met up to design concurrency assignment 2 and kernel project 2; decided on CLOOK vs LOOK                 & Wed Oct 25 19:00 & Wed Oct 25 21:00               &                                          &             	 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Questions}
+
+\subsection{What do you think the main point of this assignment is?}
+This assignment helped us explore the ways that the Linux kernel reads and writes files through the lens of the I/O scheduler.
+In order to implement our solution, we had to first go through the existing scheduler files and track the flow of data through the functions present. 
+This got us familiar with the functions that are typically present in I/O schedulers and how they work.
+From this, we could identify what parts of the NoOp scheduler (on which we were basing our implementation) would need to be modified to make it function as intended.
+
+In addition, this assignment also made us get familiar with the yocto kernel documentation.
+It was difficult to find the options that had to be changed in the QEMU command, even given that we looked through them in the last assignment.
+However, through a combination of looking through docs, asking peers, and petitioning Kevin, we finally were able to get the kernel to boot with our scheduler.
+
+From these two very important aspects of the assignment, it would seem that the main point was to get us familiar with how a kernel is built. 
+Schedulers and images are both very important parts of the kernel, and we had to make several changes across several files to get this assignment to work. 
+
+\subsection{How did you personally approach the problem?}
+The overall philosophy we approached this assignment with was this: 
+"Since there are already working schedulers, let's mimic what we can from them and make the minimal necessary changes."
+
+As suggested in the assignment, we started by checking out the No-Op scheduler implementation in the /block directory.
+Comparing this with the other scheduler implementations in the block directory (CFQ and Deadline specifically), we learned how a scheduler is typically set up and what the normal flow of data is. 
+After tracing through these, we were able to identify the function that we'd need to modify to make our scheduler work: the add\_request() function.
+
+Add\_request() handles the case in which a new request has been created and needs to be inserted into the queue.
+In the No-Op implementation, it just sticks it on the end of the list.
+However, we need to maintain a sorted queue so that we can traverse it and know it's in some sort of order. 
+So, we decided to use a list\_for\_each loop (implemented for us in library functions) to iterate through the queue and allow us to use insertion sort.
+We check the sector of each request and traverse the list until we find that the to-be-inserted request's sector is smaller than the sector that the list head is currently looking at. When that happens, we insert this new request in front of that one, maintaining the queue in a smallest to largest order.
+
+We also combed through the configuration files of the kernel, looking for configuration done for other schedulers (like No-Op). 
+This led us to making some changes in the Kconfig files and the makefile. 
+%TA Question: Do y'all want completely serious writing, or would you mind a spattering of jokes? Let me know at mahughj@oregonstate.edu 
+After implementing our code, we still had issues with running the correct QEMU command to boot our scheduler and our kernel.
+To figure out the right command, we checked through documentation (especially VirtIO documentation after Kevin gave us a tip) and changed the command line flags accordingly. 
+After updating some settings in menuconfig, we had a working scheduler on the kernel.
+
+\subsection{How did you ensure your solution was correct?}
+To check our work, we wrote printk statements in the add\_request() and dispatch() functions that will trigger when each is called. 
+Each statement contains a brief description of what we're doing (adding/inserting/dispatching) and then prints the sector that the request is trying to access.
+We then use these kprint messages to verify that the scheduler is acting as it should: 
+namely, that it is performing its scheduling actions in the correct order, and that it is handling requests in increasing sector order, then jumping back down when it reaches the max.
+
+\subsection{What did you learn?}
+The most important thing we learned through this assignment is how the different pieces of the kernel come together to create a coherent functioning whole.
+To get the kernel to boot our scheduler, we had to thoroughly understand the components of schedulers and the configurations that go into building a kernel.
+Outside of our sstf-iosched.c file, we mainly worked in the kernel Makefiles and .config files.
+In order for our scheduler to be fully integrated into the kernel, we needed to learn about the placement and ordering of the lines in each file and what they did.
+For instance, there was a period of time in which we had a functional scheduler file (sstf-iosched.c), but hadn't add to the makefile. 
+This caused sstf-iosched.o to never be generated. 
+By adding to the makefile in the right location, the scheduler was able to be compiled and eventually utilized.
+This all contributed to a larger view of how the kernel works, which will serve us well in future assignments. 
+
+\subsection{How should the TA evaluate your work?}
+To evaluate our work, perform the following steps;
+
+\begin{enumerate}
+	\item Make sure you have yocto in your current directory (pull the repo)
+    \item Apply the patch: \verb|git am < asgn2.patch|
+    \item If not already in the folder, \verb|cd linux-yocto-3.19|
+    \item Compile the image: \verb|make -j4 all|
+    \item Source the environment file: \verb|source ../environment-setup-i586-poky-linux|
+    \item Run this qemu command to build the terminal:
+    \begin{enumerate}
+    	\item qemu-system-i386 -gdb tcp::5530 -S -nographic -kernel arch/x86/boot/bzImage -drive file=core-image-lsb-sdk-qemux86.ext4 -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/hda rw console=ttyS0"
+    \end{enumerate}
+    \item In another window:
+    \begin{enumerate}
+    	\item Move into the linux-yocto-3.19 directory using cd
+        \item \verb|gdb|
+        \item \verb|file vmlinux|
+        \item \verb|target remote :5530|
+        \item \verb|continue|
+     \end{enumerate}
+     \item Now, in the booted up kernel...
+     \begin{enumerate}
+     	\item Wait for the kernel to boot up. It shouldn't panic, obviously.
+        \item Log in with root and no password.
+        \item Run the following command: \verb|cat /sys/block/hda/queue/scheduler|
+        \item Verify that SSTF appears in brackets ( [SSTF] ).
+        	\begin{itemize}
+            	\item If SSTF is not in brackets, run the command \verb|echo sstf > /sys/block/hda/queue/scheduler|
+            \end{itemize}
+        \item Run \verb|dmesg| to see our kprint debugging statements.
+        	\begin{itemize}
+            	\item Each message from our scheduler will be tagged with [SSTF] in the printed message.
+            \end{itemize}
+     \end{enumerate}
+\end{enumerate}
+
+
+
+%\section{Code Listing Test}
+
+%\begin{lstlisting}
+%#include <stdio.h>
+%#define N 10
+%/* Block
+%* comment */
+
+%int main()
+%{
+%	int i;
+%
+%	// Line comment.
+%	puts("Hello world!");
+%
+%	for (i = 0; i < N; i++)
+%	{
+%		puts("LaTeX is also great for programmers!");
+%	}
+%
+%	return 0;
+%}
+%\end{lstlisting}
+
+
+\end{document}

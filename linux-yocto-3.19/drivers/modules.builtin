@@ -12,10 +12,8 @@ kernel/drivers/ata/ata_piix.ko
 kernel/drivers/base/firmware_class.ko
 kernel/drivers/block/brd.ko
 kernel/drivers/block/loop.ko
-kernel/drivers/block/virtio_blk.ko
 kernel/drivers/cdrom/cdrom.ko
 kernel/drivers/cdrom/cdrom.ko
-kernel/drivers/char/virtio_console.ko
 kernel/drivers/char/agp/agpgart.ko
 kernel/drivers/char/agp/intel-agp.ko
 kernel/drivers/char/agp/intel-gtt.ko
@@ -62,7 +60,6 @@ kernel/drivers/md/dm-region-hash.ko
 kernel/drivers/md/dm-zero.ko
 kernel/drivers/net/mii.ko
 kernel/drivers/net/netconsole.ko
-kernel/drivers/net/virtio_net.ko
 kernel/drivers/net/ethernet/amd/pcnet32.ko
 kernel/drivers/net/ethernet/broadcom/tg3.ko
 kernel/drivers/net/ethernet/intel/e100.ko
@@ -103,8 +100,3 @@ kernel/drivers/video/fbdev/core/fb.ko
 kernel/drivers/video/fbdev/core/cfbfillrect.ko
 kernel/drivers/video/fbdev/core/cfbcopyarea.ko
 kernel/drivers/video/fbdev/core/cfbimgblt.ko
-kernel/drivers/virtio/virtio.ko
-kernel/drivers/virtio/virtio_ring.ko
-kernel/drivers/virtio/virtio_mmio.ko
-kernel/drivers/virtio/virtio_pci.ko
-kernel/drivers/virtio/virtio_balloon.ko

@@ -19574,7 +19574,7 @@ common:
 	.long	0x9c1a
 	.uleb128 0xe
 	.long	.LASF1934
-	.byte	0xf8
+	.byte	0xec
 	.byte	0x61
 	.byte	0x18
 	.long	0x9c57
@@ -19590,7 +19590,7 @@ common:
 	.long	0x9c67
 	.uleb128 0x4
 	.long	0x3c
-	.byte	0x3d
+	.byte	0x3a
 	.byte	0
 	.uleb128 0x31
 	.long	.LASF1935

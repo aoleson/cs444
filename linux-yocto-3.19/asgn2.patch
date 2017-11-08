@@ -1,0 +1,278 @@
+diff --git a/linux-yocto-3.19/.config b/linux-yocto-3.19/.config
+index 667cbf8..e575944 100644
+--- a/linux-yocto-3.19/.config
++++ b/linux-yocto-3.19/.config
+@@ -325,11 +325,13 @@ CONFIG_EFI_PARTITION=y
+ CONFIG_IOSCHED_NOOP=y
+ CONFIG_IOSCHED_DEADLINE=y
+ CONFIG_IOSCHED_CFQ=y
++CONFIG_IOSCHED_SSTF=y
+ # CONFIG_CFQ_GROUP_IOSCHED is not set
+ # CONFIG_DEFAULT_DEADLINE is not set
+-CONFIG_DEFAULT_CFQ=y
++# CONFIG_DEFAULT_CFQ is not set
+ # CONFIG_DEFAULT_NOOP is not set
+-CONFIG_DEFAULT_IOSCHED="cfq"
++CONFIG_DEFAULT_SSTF=y
++CONFIG_DEFAULT_IOSCHED="sstf"
+ CONFIG_UNINLINE_SPIN_UNLOCK=y
+ CONFIG_ARCH_SUPPORTS_ATOMIC_RMW=y
+ CONFIG_MUTEX_SPIN_ON_OWNER=y
+@@ -470,8 +472,6 @@ CONFIG_ARCH_DISCARD_MEMBLOCK=y
+ # CONFIG_HAVE_BOOTMEM_INFO_NODE is not set
+ CONFIG_PAGEFLAGS_EXTENDED=y
+ CONFIG_SPLIT_PTLOCK_CPUS=4
+-CONFIG_MEMORY_BALLOON=y
+-CONFIG_BALLOON_COMPACTION=y
+ CONFIG_COMPACTION=y
+ CONFIG_MIGRATION=y
+ # CONFIG_PHYS_ADDR_T_64BIT is not set
+@@ -1183,7 +1183,6 @@ CONFIG_BLK_DEV_RAM_SIZE=4096
+ # CONFIG_BLK_DEV_XIP is not set
+ # CONFIG_CDROM_PKTCDVD is not set
+ # CONFIG_ATA_OVER_ETH is not set
+-CONFIG_VIRTIO_BLK=y
+ # CONFIG_BLK_DEV_HD is not set
+ # CONFIG_BLK_DEV_RBD is not set
+ # CONFIG_BLK_DEV_RSXX is not set
+@@ -1406,7 +1405,6 @@ CONFIG_SCSI_LOWLEVEL=y
+ # CONFIG_SCSI_DEBUG is not set
+ # CONFIG_SCSI_PMCRAID is not set
+ # CONFIG_SCSI_PM8001 is not set
+-# CONFIG_SCSI_VIRTIO is not set
+ # CONFIG_SCSI_DH is not set
+ # CONFIG_SCSI_OSD_INITIATOR is not set
+ CONFIG_ATA=y
+@@ -1571,7 +1569,6 @@ CONFIG_NETPOLL=y
+ CONFIG_NET_POLL_CONTROLLER=y
+ CONFIG_TUN=m
+ # CONFIG_VETH is not set
+-CONFIG_VIRTIO_NET=y
+ # CONFIG_NLMON is not set
+ # CONFIG_ARCNET is not set
+ 
+@@ -2106,8 +2103,6 @@ CONFIG_CONSOLE_POLL=y
+ CONFIG_PRINTER=m
+ # CONFIG_LP_CONSOLE is not set
+ # CONFIG_PPDEV is not set
+-CONFIG_HVC_DRIVER=y
+-CONFIG_VIRTIO_CONSOLE=y
+ # CONFIG_IPMI_HANDLER is not set
+ CONFIG_HW_RANDOM=m
+ # CONFIG_HW_RANDOM_TIMERIOMEM is not set
+@@ -2115,7 +2110,6 @@ CONFIG_HW_RANDOM_INTEL=m
+ CONFIG_HW_RANDOM_AMD=m
+ CONFIG_HW_RANDOM_GEODE=m
+ CONFIG_HW_RANDOM_VIA=m
+-# CONFIG_HW_RANDOM_VIRTIO is not set
+ # CONFIG_NVRAM is not set
+ # CONFIG_R3964 is not set
+ # CONFIG_APPLICOM is not set
+@@ -3406,15 +3400,12 @@ CONFIG_RTC_DRV_CMOS=y
+ # CONFIG_AUXDISPLAY is not set
+ # CONFIG_UIO is not set
+ # CONFIG_VIRT_DRIVERS is not set
+-CONFIG_VIRTIO=y
+ 
+ #
+ # Virtio drivers
+ #
+-CONFIG_VIRTIO_PCI=y
+-CONFIG_VIRTIO_BALLOON=y
+-CONFIG_VIRTIO_MMIO=y
+-# CONFIG_VIRTIO_MMIO_CMDLINE_DEVICES is not set
++# CONFIG_VIRTIO_PCI is not set
++# CONFIG_VIRTIO_MMIO is not set
+ 
+ #
+ # Microsoft Hyper-V guest support
+diff --git a/linux-yocto-3.19/block/Kconfig.iosched b/linux-yocto-3.19/block/Kconfig.iosched
+index 421bef9..28736c7 100644
+--- a/linux-yocto-3.19/block/Kconfig.iosched
++++ b/linux-yocto-3.19/block/Kconfig.iosched
+@@ -32,6 +32,15 @@ config IOSCHED_CFQ
+ 
+ 	  This is the default I/O scheduler.
+ 
++config IOSCHED_SSTF
++	tristate "SSTF I/O scheduler"
++	default y
++	---help---
++		Help is for 
++		the
++		weak,
++		fool!
++
+ config CFQ_GROUP_IOSCHED
+ 	bool "CFQ Group Scheduling support"
+ 	depends on IOSCHED_CFQ && BLK_CGROUP
+@@ -54,6 +63,9 @@ choice
+ 
+ 	config DEFAULT_NOOP
+ 		bool "No-op"
++	
++	config DEFAULT_SSTF
++		bool "SSTF" if IOSCHED_SSTF=y
+ 
+ endchoice
+ 
+@@ -62,6 +74,7 @@ config DEFAULT_IOSCHED
+ 	default "deadline" if DEFAULT_DEADLINE
+ 	default "cfq" if DEFAULT_CFQ
+ 	default "noop" if DEFAULT_NOOP
++	default "sstf" if DEFAULT_SSTF
+ 
+ endmenu
+ 
+diff --git a/linux-yocto-3.19/block/Makefile b/linux-yocto-3.19/block/Makefile
+index 00ecc97..427e2ea 100644
+--- a/linux-yocto-3.19/block/Makefile
++++ b/linux-yocto-3.19/block/Makefile
+@@ -18,6 +18,7 @@ obj-$(CONFIG_BLK_DEV_THROTTLING)	+= blk-throttle.o
+ obj-$(CONFIG_IOSCHED_NOOP)	+= noop-iosched.o
+ obj-$(CONFIG_IOSCHED_DEADLINE)	+= deadline-iosched.o
+ obj-$(CONFIG_IOSCHED_CFQ)	+= cfq-iosched.o
++obj-$(CONFIG_IOSCHED_SSTF) += sstf-iosched.o
+ 
+ obj-$(CONFIG_BLOCK_COMPAT)	+= compat_ioctl.o
+ obj-$(CONFIG_BLK_CMDLINE_PARSER)	+= cmdline-parser.o
+diff --git a/linux-yocto-3.19/block/sstf-iosched.c b/linux-yocto-3.19/block/sstf-iosched.c
+new file mode 100644
+index 0000000..56038ec
+--- /dev/null
++++ b/linux-yocto-3.19/block/sstf-iosched.c
+@@ -0,0 +1,134 @@
++/*
++ * elevator sstf
++ */
++#include <linux/blkdev.h>
++#include <linux/elevator.h>
++#include <linux/bio.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++#include <linux/init.h>
++
++struct sstf_data {
++	struct list_head queue;
++};
++
++static void sstf_merged_requests(struct request_queue *q, struct request *rq,
++				 struct request *next)
++{
++	list_del_init(&next->queuelist);
++}
++
++static int sstf_dispatch(struct request_queue *q, int force)
++{
++	struct sstf_data *nd = q->elevator->elevator_data;
++
++	if (!list_empty(&nd->queue)) {
++		struct request *rq;
++		rq = list_entry(nd->queue.next, struct request, queuelist);
++		list_del_init(&rq->queuelist);
++		elv_dispatch_sort(q, rq);
++		printk(KERN_DEBUG "[SSTF] Dispatching! Proc at position %lu\n", blk_rq_pos(rq));
++		return 1;
++	}
++	return 0;
++}
++
++static void sstf_add_request(struct request_queue *q, struct request *rq)
++{
++	struct sstf_data *nd = q->elevator->elevator_data;
++	struct list_head *cur = NULL;
++
++	printk(KERN_DEBUG "[SSTF] Adding request! Proc at position %lu\n", blk_rq_pos(rq));
++	list_for_each(cur, &nd->queue) {
++		if (rq_end_sector ( list_entry(cur, struct request, queuelist)) > rq_end_sector(rq)) {
++			printk(KERN_DEBUG "[SSTF] Inserting! Proc at position %lu\n", blk_rq_pos(rq));
++			break;
++		}
++	}
++
++	list_add_tail(&rq->queuelist, &nd->queue);
++}
++
++static struct request *
++sstf_former_request(struct request_queue *q, struct request *rq)
++{
++	struct sstf_data *nd = q->elevator->elevator_data;
++
++	if (rq->queuelist.prev == &nd->queue)
++		return NULL;
++	return list_entry(rq->queuelist.prev, struct request, queuelist);
++}
++
++static struct request *
++sstf_latter_request(struct request_queue *q, struct request *rq)
++{
++	struct sstf_data *nd = q->elevator->elevator_data;
++
++	if (rq->queuelist.next == &nd->queue)
++		return NULL;
++	return list_entry(rq->queuelist.next, struct request, queuelist);
++}
++
++static int sstf_init_queue(struct request_queue *q, struct elevator_type *e)
++{
++	struct sstf_data *nd;
++	struct elevator_queue *eq;
++
++	eq = elevator_alloc(q, e);
++	if (!eq)
++		return -ENOMEM;
++
++	nd = kmalloc_node(sizeof(*nd), GFP_KERNEL, q->node);
++	if (!nd) {
++		kobject_put(&eq->kobj);
++		return -ENOMEM;
++	}
++	eq->elevator_data = nd;
++
++	INIT_LIST_HEAD(&nd->queue);
++
++	spin_lock_irq(q->queue_lock);
++	q->elevator = eq;
++	spin_unlock_irq(q->queue_lock);
++	return 0;
++}
++
++static void sstf_exit_queue(struct elevator_queue *e)
++{
++	struct sstf_data *nd = e->elevator_data;
++
++	BUG_ON(!list_empty(&nd->queue));
++	kfree(nd);
++}
++
++static struct elevator_type elevator_sstf = {
++	.ops = {
++		.elevator_merge_req_fn		= sstf_merged_requests,
++		.elevator_dispatch_fn		= sstf_dispatch,
++		.elevator_add_req_fn		= sstf_add_request,
++		.elevator_former_req_fn		= sstf_former_request,
++		.elevator_latter_req_fn		= sstf_latter_request,
++		.elevator_init_fn		= sstf_init_queue,
++		.elevator_exit_fn		= sstf_exit_queue,
++	},
++	.elevator_name = "sstf",
++	.elevator_owner = THIS_MODULE,
++};
++
++static int __init sstf_init(void)
++{
++	return elv_register(&elevator_sstf);
++}
++
++static void __exit sstf_exit(void)
++{
++	elv_unregister(&elevator_sstf);
++}
++
++module_init(sstf_init);
++module_exit(sstf_exit);
++
++
++MODULE_AUTHOR("Jacob Mahugh & Alannah Oleson");
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("SSTF IO scheduler");

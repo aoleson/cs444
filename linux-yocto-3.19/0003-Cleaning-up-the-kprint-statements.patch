@@ -1,0 +1,46 @@
+From 63aff2f837551dcb576b7d0dd262e0a953f17ed9 Mon Sep 17 00:00:00 2001
+From: aoleson <alannah313@gmail.com>
+Date: Mon, 30 Oct 2017 18:02:06 -0700
+Subject: [PATCH 3/3] Cleaning up the kprint statements
+
+---
+ linux-yocto-3.19/block/sstf-iosched.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/linux-yocto-3.19/block/sstf-iosched.c b/linux-yocto-3.19/block/sstf-iosched.c
+index 433e23d..56038ec 100644
+--- a/linux-yocto-3.19/block/sstf-iosched.c
++++ b/linux-yocto-3.19/block/sstf-iosched.c
+@@ -27,7 +27,7 @@ static int sstf_dispatch(struct request_queue *q, int force)
+ 		rq = list_entry(nd->queue.next, struct request, queuelist);
+ 		list_del_init(&rq->queuelist);
+ 		elv_dispatch_sort(q, rq);
+-		printk(KERN_DEBUG "[SSTF] Dispatching!\n");
++		printk(KERN_DEBUG "[SSTF] Dispatching! Proc at position %lu\n", blk_rq_pos(rq));
+ 		return 1;
+ 	}
+ 	return 0;
+@@ -38,10 +38,10 @@ static void sstf_add_request(struct request_queue *q, struct request *rq)
+ 	struct sstf_data *nd = q->elevator->elevator_data;
+ 	struct list_head *cur = NULL;
+ 
+-	printk(KERN_DEBUG "[SSTF] Adding reuest!\n");
++	printk(KERN_DEBUG "[SSTF] Adding request! Proc at position %lu\n", blk_rq_pos(rq));
+ 	list_for_each(cur, &nd->queue) {
+ 		if (rq_end_sector ( list_entry(cur, struct request, queuelist)) > rq_end_sector(rq)) {
+-			printk(KERN_DEBUG "[SSTF] Inserting!\n");
++			printk(KERN_DEBUG "[SSTF] Inserting! Proc at position %lu\n", blk_rq_pos(rq));
+ 			break;
+ 		}
+ 	}
+@@ -129,6 +129,6 @@ module_init(sstf_init);
+ module_exit(sstf_exit);
+ 
+ 
+-MODULE_AUTHOR("Jens Axboe");
++MODULE_AUTHOR("Jacob Mahugh & Alannah Oleson");
+ MODULE_LICENSE("GPL");
+ MODULE_DESCRIPTION("SSTF IO scheduler");
+-- 
+1.8.3.1
+
