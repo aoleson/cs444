@@ -1,1 +1,1 @@
-cmd_net/ipv4/netfilter/nf_nat_proto_gre.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/ipv4/netfilter/nf_nat_proto_gre.ko net/ipv4/netfilter/nf_nat_proto_gre.o net/ipv4/netfilter/nf_nat_proto_gre.mod.o
+cmd_net/ipv4/netfilter/nf_nat_proto_gre.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/ipv4/netfilter/nf_nat_proto_gre.ko net/ipv4/netfilter/nf_nat_proto_gre.o net/ipv4/netfilter/nf_nat_proto_gre.mod.o

@@ -8,9 +8,7 @@ kernel/drivers/char/hw_random/geode-rng.ko
 kernel/drivers/char/hw_random/via-rng.ko
 kernel/drivers/gpu/drm/ttm/ttm.ko
 kernel/drivers/gpu/drm/gma500/gma500_gfx.ko
-kernel/drivers/block/floppy.ko
-kernel/drivers/block/nbd.ko
-kernel/drivers/block/cryptoloop.ko
+kernel/drivers/block/intentionallyObnoxiousName.ko
 kernel/drivers/misc/eeprom/eeprom_93cx6.ko
 kernel/drivers/net/ethernet/atheros/atlx/atl2.ko
 kernel/drivers/net/ethernet/atheros/atl1e/atl1e.ko

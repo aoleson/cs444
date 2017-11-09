@@ -1,1 +1,1 @@
-cmd_drivers/net/wireless/rt2x00/rt2x00mmio.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o drivers/net/wireless/rt2x00/rt2x00mmio.ko drivers/net/wireless/rt2x00/rt2x00mmio.o drivers/net/wireless/rt2x00/rt2x00mmio.mod.o
+cmd_drivers/net/wireless/rt2x00/rt2x00mmio.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o drivers/net/wireless/rt2x00/rt2x00mmio.ko drivers/net/wireless/rt2x00/rt2x00mmio.o drivers/net/wireless/rt2x00/rt2x00mmio.mod.o

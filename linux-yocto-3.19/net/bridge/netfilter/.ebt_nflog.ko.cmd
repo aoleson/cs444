@@ -1,1 +1,1 @@
-cmd_net/bridge/netfilter/ebt_nflog.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/bridge/netfilter/ebt_nflog.ko net/bridge/netfilter/ebt_nflog.o net/bridge/netfilter/ebt_nflog.mod.o
+cmd_net/bridge/netfilter/ebt_nflog.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/bridge/netfilter/ebt_nflog.ko net/bridge/netfilter/ebt_nflog.o net/bridge/netfilter/ebt_nflog.mod.o

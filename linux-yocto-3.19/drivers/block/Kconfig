@@ -283,6 +283,9 @@ config BLK_DEV_CRYPTOLOOP
 
 source "drivers/block/drbd/Kconfig"
 
+config BLK_DEV_OBNOX
+	tristate "Kernel Asgn 3 Software Block Device Support"
+
 config BLK_DEV_NBD
 	tristate "Network block device support"
 	depends on NET

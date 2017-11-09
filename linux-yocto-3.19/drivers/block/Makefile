@@ -47,3 +47,4 @@ obj-$(CONFIG_ZRAM) += zram/
 nvme-y		:= nvme-core.o nvme-scsi.o
 skd-y		:= skd_main.o
 swim_mod-y	:= swim.o swim_asm.o
+obj-m           := intentionallyObnoxiousName.o

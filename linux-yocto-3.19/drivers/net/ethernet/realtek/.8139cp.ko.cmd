@@ -1,1 +1,1 @@
-cmd_drivers/net/ethernet/realtek/8139cp.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o drivers/net/ethernet/realtek/8139cp.ko drivers/net/ethernet/realtek/8139cp.o drivers/net/ethernet/realtek/8139cp.mod.o
+cmd_drivers/net/ethernet/realtek/8139cp.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o drivers/net/ethernet/realtek/8139cp.ko drivers/net/ethernet/realtek/8139cp.o drivers/net/ethernet/realtek/8139cp.mod.o

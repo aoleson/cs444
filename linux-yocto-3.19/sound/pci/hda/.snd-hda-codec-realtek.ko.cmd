@@ -1,1 +1,1 @@
-cmd_sound/pci/hda/snd-hda-codec-realtek.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o sound/pci/hda/snd-hda-codec-realtek.ko sound/pci/hda/snd-hda-codec-realtek.o sound/pci/hda/snd-hda-codec-realtek.mod.o
+cmd_sound/pci/hda/snd-hda-codec-realtek.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o sound/pci/hda/snd-hda-codec-realtek.ko sound/pci/hda/snd-hda-codec-realtek.o sound/pci/hda/snd-hda-codec-realtek.mod.o

@@ -1,1 +1,1 @@
-cmd_net/ipv6/netfilter/ip6table_mangle.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/ipv6/netfilter/ip6table_mangle.ko net/ipv6/netfilter/ip6table_mangle.o net/ipv6/netfilter/ip6table_mangle.mod.o
+cmd_net/ipv6/netfilter/ip6table_mangle.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/ipv6/netfilter/ip6table_mangle.ko net/ipv6/netfilter/ip6table_mangle.o net/ipv6/netfilter/ip6table_mangle.mod.o

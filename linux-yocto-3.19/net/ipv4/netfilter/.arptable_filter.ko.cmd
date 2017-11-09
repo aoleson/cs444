@@ -1,1 +1,1 @@
-cmd_net/ipv4/netfilter/arptable_filter.ko := ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/ipv4/netfilter/arptable_filter.ko net/ipv4/netfilter/arptable_filter.o net/ipv4/netfilter/arptable_filter.mod.o
+cmd_net/ipv4/netfilter/arptable_filter.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o net/ipv4/netfilter/arptable_filter.ko net/ipv4/netfilter/arptable_filter.o net/ipv4/netfilter/arptable_filter.mod.o

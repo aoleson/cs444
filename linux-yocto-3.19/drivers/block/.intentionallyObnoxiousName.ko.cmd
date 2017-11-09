@@ -1,0 +1,1 @@
+cmd_drivers/block/intentionallyObnoxiousName.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o drivers/block/intentionallyObnoxiousName.ko drivers/block/intentionallyObnoxiousName.o drivers/block/intentionallyObnoxiousName.mod.o
