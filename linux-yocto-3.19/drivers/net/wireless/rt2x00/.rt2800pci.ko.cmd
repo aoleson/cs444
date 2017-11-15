@@ -1,1 +1,0 @@
-cmd_drivers/net/wireless/rt2x00/rt2800pci.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o drivers/net/wireless/rt2x00/rt2800pci.ko drivers/net/wireless/rt2x00/rt2800pci.o drivers/net/wireless/rt2x00/rt2800pci.mod.o

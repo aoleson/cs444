@@ -1,0 +1,175 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage{enumitem}
+%\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+
+% Code listing and colors
+\usepackage{listings}  
+\usepackage{color}
+\lstset{
+	language=C,
+	basicstyle=\ttfamily,
+	keywordstyle=\color{blue}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	commentstyle=\color{green}\ttfamily,
+	morecomment=[l][\color{magenta}]{\#}
+}
+% End code listing setup
+
+\geometry{textheight=8.5in, textwidth=6in}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Alannah Oleson, Jacob Mahugh}
+
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {},
+  pdftitle = {CS 444 Assignment 3},
+  pdfsubject = {CS 444 Assignment 3},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\vspace*{4cm}
+	{\scshape\huge Project 3: Encrypted Block Device\par}
+	\vspace{1cm}
+	{\scshape\LARGE CS 444: Operating Systems II\par}
+	\vspace{0.5cm}
+	{\large\bfseries Fall 2017\par}
+	{\large Abstract\par}
+	\vspace {0.5cm}
+	In the third kernel assignment, we implement an encrypted RAM block device
+	as a kernel module and load it into our qemu VM at runtime.
+	This document covers our implementation's changes,
+	including how to boot up the kernel and ensure that the encryption is running
+	correctly. This document also discusses our philosophy
+	in designing the solution and what we learned from the process.
+	\par
+	\vspace{1cm}
+	{\Large\itshape Jacob Mahugh\par}
+    \vspace {0.5cm}
+    {\Large\itshape Alannah Oleson\par}
+	\vfill
+	{\large \today\par}	
+\end{titlepage}
+
+
+
+\section{Program Design}
+We began this assignment by looking at the LDD3 implementation linked on the class webpage.
+Specifically, we found the most useful chapter to be Ch. 16, which described block device drivers. 
+This chapter walked through each of the functions in an implementation of the SBULL block driver and how to write each of them. 
+This gave us a solid foundation of knowledge on which to build our own driver.
+
+Because of this, we decided to base our implementation off the working SBULL driver.
+We found a base driver (at http://blog.superpat.com/2010/05/04/a-simple-block-driver-for-linux-kernel-2-6-31/) that we began with.
+
+**TODO: finish**
+
+
+
+\section{Version Control and Work Log}
+
+**TODO: this is from last assignment, update**
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3cm}|p{2cm}|p{2cm}|p{3cm}|p{2cm}|}
+\hline
+Description                                                                                              & Start time       & End (commit) time              & Commit number (if relevant)              & Author       \\
+\hline
+Cleaning up the kprint statements                                                                        & Mon Oct 30 17:00 & Mon Oct 30 18:02:06 2017 -0700 & 63aff2f837551 dcb576b7d0dd262 e0a953f17ed9 & aoleson      \\
+\hline
+cleaning up yocto directory target files                                                                 & Mon Oct 30 16:35 & Mon Oct 30 16:42:32 2017 -0700 & 67d36e7c4f922 20340a90f0831aa d458b3473194 & aoleson      \\
+\hline
+Committing full yocto directory. Ensures we get all the changes from the menuconfig options              & Mon Oct 30 16:30 & Mon Oct 30 16:31:46 2017 -0700 & 7eb6b4a42c3a8 6088ffe19119229 53076afaba98 & aoleson      \\
+\hline
+Tested working sstf files. Need to clean up kprints though                                               & Mon Oct 30 11:00 & Mon Oct 30 16:28:35 2017 -0700 & b4552cff631ae ebe7cff247b8892 8565d5dcfd01 & aoleson      \\
+\hline
+Added intial sstf-iosched.c as cp of noop                                                                & Fri Oct 27 10:00 & Fri Oct 27 10:52:56 2017 -0700 & 6e64485efc30e f2607f20b1c5ea5 8055b47971b8 & Jacob Mahugh \\
+\hline
+Basic file structure for concurreny asgn 2; notes on Arbitrator(waiter) solution implementation in code. & Thu Oct 26 07:00 & Thu Oct 26 09:10:39 2017 -0700 & ca40083ddeb61 780e828f0c19f92 d11cc997268c & Jacob Mahugh \\
+\hline
+Met up to design concurrency assignment 2 and kernel project 2; decided on CLOOK vs LOOK                 & Wed Oct 25 19:00 & Wed Oct 25 21:00               &                                          &             	 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Questions}
+
+\subsection{What do you think the main point of this assignment is?}
+
+
+\subsection{How did you personally approach the problem?}
+
+
+\subsection{How did you ensure your solution was correct?}
+
+
+\subsection{What did you learn?}
+
+
+\subsection{How should the TA evaluate your work?}
+To evaluate our work, perform the following steps:
+
+\begin{enumerate}
+
+\end{enumerate}
+
+
+
+
+%\section{Code Listing Test}
+
+%\begin{lstlisting}
+%#include <stdio.h>
+%#define N 10
+%/* Block
+%* comment */
+
+%int main()
+%{
+%	int i;
+%
+%	// Line comment.
+%	puts("Hello world!");
+%
+%	for (i = 0; i < N; i++)
+%	{
+%		puts("LaTeX is also great for programmers!");
+%	}
+%
+%	return 0;
+%}
+%\end{lstlisting}
+
+
+\end{document}

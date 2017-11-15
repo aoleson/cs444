@@ -1,1 +1,0 @@
-cmd_drivers/media/v4l2-core/videodev.ko := i586-poky-linux-ld -r -m elf_i386 -T ./scripts/module-common.lds --build-id  -o drivers/media/v4l2-core/videodev.ko drivers/media/v4l2-core/videodev.o drivers/media/v4l2-core/videodev.mod.o
