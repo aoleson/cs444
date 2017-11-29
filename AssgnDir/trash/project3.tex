@@ -1,0 +1,278 @@
+\documentclass[letterpaper,10pt,titlepage]{article}
+
+\usepackage{graphicx}                                        
+\usepackage{amssymb}                                         
+\usepackage{amsmath}                                         
+\usepackage{amsthm}                                          
+
+\usepackage{alltt}                                           
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage{enumitem}
+%\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+
+% Code listing and colors
+\usepackage{listings}  
+\usepackage{color}
+\lstset{
+	language=C,
+	basicstyle=\ttfamily,
+	keywordstyle=\color{blue}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	commentstyle=\color{green}\ttfamily,
+	morecomment=[l][\color{magenta}]{\#}
+}
+% End code listing setup
+
+\geometry{textheight=8.5in, textwidth=6in}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Alannah Oleson, Jacob Mahugh}
+
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {},
+  pdftitle = {CS 444 Assignment 3},
+  pdfsubject = {CS 444 Assignment 3},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\vspace*{4cm}
+	{\scshape\huge Project 3: Encrypted Block Device\par}
+	\vspace{1cm}
+	{\scshape\LARGE CS 444: Operating Systems II\par}
+	\vspace{0.5cm}
+	{\large\bfseries Fall 2017\par}
+	{\large Abstract\par}
+	\vspace {0.5cm}
+	In the third kernel assignment, we implement an encrypted RAM block device
+	as a kernel module and load it into our QEMU VM at runtime.
+	This document covers our implementation's changes,
+	including how to boot up the kernel and ensure that the encryption is running
+	correctly. This document also discusses our philosophy
+	in designing the solution and what we learned from the process.
+	\par
+	\vspace{1cm}
+	{\Large\itshape Jacob Mahugh\par}
+    \vspace {0.5cm}
+    {\Large\itshape Alannah Oleson\par}
+	\vfill
+	{\large \today\par}	
+\end{titlepage}
+
+
+
+\section{Program Design}
+We began this assignment by looking at the LDD3 implementation linked on the class webpage.
+Specifically, we found the most useful chapter to be Ch. 16, which described block device drivers. 
+This chapter walked through each of the functions in an implementation of the SBULL block driver and how to write each of them. 
+This gave us a solid foundation of knowledge on which to build our own driver.
+
+Because of this, we decided to base our initial implementation off the working SBULL driver.
+However, when trying to mount this driver, we were running into some really weird errors that crashed the kernel.
+So we did some digging around and found a simpler driver implementation in the SBD driver. 
+We found this base driver (at http://blog.superpat.com/2010/05/04/a-simple-block-driver-for-linux-kernel-2-6-31/).
+
+The most major modification we make is adding encryption to the driver; this is done in the obnox\_transfer function
+(obnox is the name we gave our driver, based off the obnoxious problems the SBULL implementation was giving us). 
+We use the crypto\_cipher\_(encrypt/decrypt)\_one functions to perform encryption one block at a time, instead of trying to mess with encrypting multiple blocks. We also make sure to properly uninitialize the crypto by freeing it in the exit function for the driver. 
+
+Overall, the gist of the design was:
+\begin{enumerate}
+    \item Implement normal SBD
+    \item Test
+    \item Add encryption on transfer to and from driver
+    \item Test
+\end{enumerate}	
+
+\section{Version Control and Work Log}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3cm}|p{2cm}|p{2cm}|p{3cm}|p{2cm}|}
+\hline
+Description                                                                                           & Start time       & End (commit) time              & Commit number (if relevant)              & Author       \\
+\hline
+Finished up writeup and ensured testing instructions actually worked                 & Tue Nov 14 18:00 & Tue Nov 14 23:00               &                                          &             	 \\
+\hline
+working encryption, removing driver files we don't need                                              & Tue Nov 14 10:00	& Tue Nov 14 16:06:32 2017 -0800 & 309ccb7dde50c72c 4500ea5323e86e f62d6ccc76 & aoleson      \\
+\hline
+Driver compiles and creates bzImage                                                                & Thur Nov 9 09:00	& Thu Nov 9 15:33:25 2017 -0800 & f47734a6b45c1076d8 f918d36c61578 67093653e & aoleson \\
+\hline
+Committing a sample file! & Wed Nov 8 10:00 & Wed Nov 8 12:20:57 2017 -0800 & 5ad30d290ebb e11fa80e5387bee ac4b091c592d6 & Jacob Mahugh \\
+\hline
+Met up to design assignment and start researching crypto library and kernel modules.                 & Wed Nov 8 10:00 & Wed Nov 8 12:00               &                                          &             	 \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Questions}
+
+\subsection{What do you think the main point of this assignment is?}
+The main point of this assignment was to work with a poorly documented API and figure out how to use the resources at our disposal to understand what we were reading.
+As mentioned in class, a major piece of being a good programmer is the ability to problem-solve one's way through problems that don't have obvious solutions using the information at your disposal.
+Using the Crypto API was a good example of this.
+In addition, this assignment gave us a much more thorough understanding of how drivers work within the kernel to access hardware devices.
+The process of creating, mounting, and partitioning a block device and driver led to a better conceptual grasp of the overarching structure of the Linux system.
+
+\subsection{How did you personally approach the problem?}
+Our guiding philosophy for this assignment was to modify what worked minimally. 
+Unlike last assignment, where we could mimic the implementation of the already existing schedulers, we did not have as much of a guide. 
+We still took the approach of trying to mirror the implementations of the other block devices, but that was mostly to guide how we edited the Kconfig file and the Makefile. 
+
+To get started with our basic implementation of the block driver (the non-encrypted version), we originally started with an implementation of the SBULL driver. 
+We started with this one based off the recommendation of some friends; however, we eventually gave up on it (we were running into some really weird block read errors that just crashed when insmod-ding and didn't leave much of an error message to go off of) and reimplemented our driver with the simpler (and easier to understand) SBD (simple block driver) from "http://blog.superpat.com/2010/05/04/a-simple-block-driver-for-linux-kernel-2-6-31/". 
+
+With both the sbull and the sbd drivers, we followed the same general process for making it an encrypted driver. 
+I'll only discuss the sbd implementation, since that was the one that worked in the end.
+
+The first step we took was to initialize the crypto cipher by allocating to it and setting the key (lines 220, 227). 
+Then we added block encryption/decryption to the transfer function of the sbd (since this is where the data is being transferred back and forth and therefore where the reading and the writing is occuring). 
+The encryption/decryption itself was relatively simple; just loop through each block of the buffer to be encrypted (or the data to be decrypted), incrementing the counter by the crypto\_cipher\_blocksize until we've written/read all of the bytes.  
+We have some kernel prints and a wonderful hex-dump function that will print out the data in hex; we don't really need to see the actual strings themselves, just that they got transformed (and therefore have a different hex pattern) and then get reverted back into the original hex (lines 110-141). 
+These printk's will be displayed with dmesg. 
+Finally, we make sure to properly destroy the crypto structs upon exit. 
+
+Once we had this, we starting trying to install the module and set up the driver.
+To find the steps for this (described below), we used a combination of the hints from the assignment itself and creative googling such as "how to install a kernel module in Linux" which lead us to the modprobe command. 
+We tried the modprobe command for a bit (and actually got it to sorta work), but looking at modprobe we discovered that it is basically insmod with built in dependency resolution. 
+To avoid having to make sure the module was in the write location, we just used insmod. 
+
+\subsection{How did you ensure your solution was correct?}
+To debug our module, we chose to print information to the dmesg kernel log each time the driver encrypted or decrypted data. 
+These kprint messages contain a tag with our module name (obnox) so that we can grep through the log for them, the key used to encrypt the data, and the hex representations of the data to be encrypted.
+Once the data is encrypted, we print out the hex representations of the encrypted data.
+On decryption, we do the same thing: print a message that contains the hex of the data to be decrypted and then the decrypted hex. 
+Comparison between the messages before and after it passes through out encryption shows that the data is indeed being obfuscated - the hex is different.
+In addition, comparison of pre-encryption and post-decryption messages show that the data is successfully returned to normal after undergoing both processes.
+
+\subsection{What did you learn?}
+%-Pompoms on the tops of beanies were originally worn by sailors/pirates so that they could go belowdecks and not hit their heads on things, similar to how cats use their whiskers (not from this assignment, but I learned it yesterday and thought it was cool)
+		%Shhh don't tell anyone I'm a pirate
+		% O.o yarr matey
+%-Rice paddies are flooded not because they need a lot of water but to keep out pests 
+		%Whoa really?? That's weird; I would have figured that all the water would bring in mosquitoes
+        %It might, but the mosquitoes don't hurt the rice /shrug
+%-Jupiter (the planet) was named after the Roman version of Zeus, and its moons were named after all of Jupiter's lovers/affairs. NASA sent the Juno probe to Jupiter to go scope it out. So basically NASA sent Zeus's wife to go check up on him
+		%this is a good one! Funny too
+%-Caesar was never actually emperor of Rome; he created the position but never got the title. His name did become the position title, though. So technically Caesar was never 'emperor' of Rome. At least according to my 10th grade world history teacher.
+
+If nothing else, this assignment drilled the importance of clear, readable, and specific documentation into our heads. 
+The programming part of this assignment wasn't much more than modifying a running driver with the right function calls at the right point, but debugging was near-impossible due to a lack of information on error codes or recovery.
+Should there have been better documentation on the Crypto API, debugging (and implementation) would have been much easier. 
+We learned about the concept of transparent encryption/decryption as well.
+At one point, we had a working implementation of our driver, but we couldn't figure out how to test it since the file would appear correctly when we cat'd or echo'd data.
+With a few points of advice from Kevin, we figured out how to ensure our printks provided ample proof of our encryption even though it wasn't immediately evident to the user.
+We also learned a bit about how the filesystem and drivers are structured on Linux. 
+
+\subsection{How should the TA evaluate your work?}
+To evaluate our work, perform the following steps:
+
+\begin{enumerate}
+	\item Make sure you have yocto in your current directory (pull the repo)
+    \item Apply the patch: \verb|git am < asgn3.patch|
+    \item If not already in the folder, \verb|cd linux-yocto-3.19|
+    \item Change settings in menuconfig to allow our module to load:
+    \begin{enumerate}
+    	\item \verb|make menuconfig|
+        \item Go to Device Drivers
+        \item Go to Block Devices
+        \item Scroll down to "Kernel Asgn 3 Software Block Device Support" and press \verb|M| to set it as a module
+        \item Escape out and save your changes
+    \end{enumerate}
+    \item \verb|make -j4 all|
+    \item Source the environment file: \verb|source ../environment-setup-i586-poky-linux|
+    \item Run the VM with the following command: 
+    \begin{itemize}
+    	\item qemu-system-i386 -gdb tcp::5530 -S -nographic -kernel arch/x86/boot/bzImage -drive file=core-image-lsb-sdk-qemux86.ext4,if=ide,index=0,media=disk -usb -localtime --no-reboot --append "root=/dev/hda rw console=ttyS0"
+    \end{itemize}
+    \item To finish booting up the VM: In another terminal window...
+    \begin{enumerate}
+    	\item Move into the linux-yocto-3.19 directory using cd
+        \item \verb|gdb|
+        \item \verb|file vmlinux|
+        \item \verb|target remote :5530|
+        \item \verb|continue|
+     \end{enumerate}
+    \item Log in to the running VM with \verb|root| and no password
+    \item In case it's still there - \verb|rm -f obnox.ko|
+    \item Transfer the kernel module (called obnox.ko) to the running VM through SCP. [NOTE: you will need to supply your own username instead of ours in the following command, and point the source to wherever obnox.ko is on your computer.]
+    \begin{itemize}
+    	\item scp olesona@os2.engr.oregonstate.edu:/scratch/fall2017/30/linux-yocto-3.19/drivers/block/obnox.ko ./
+    \end{itemize}
+    \item Load the module: \verb|insmod obnox.ko|
+    \begin{itemize}
+    	\item Note: here it will say "unknown partition table". This is OK - we will make a partition next.
+    \end{itemize}
+    \item Create the ext2 file directory partition: \verb|mkfs.ext2 /dev/obnox_enc0|
+    \item Mount the newly created drive: \verb|mount /dev/obnox_enc0 /mnt|
+    \begin{itemize}
+    	\item To ensure that the drive has mounted correctly, type \verb|mount|. You should see \verb|/dev/obnox_enc0| in the list of mounted devices.
+    \end{itemize}
+    \item Create a file on the new directory and stick some text into it.
+    \begin{itemize}
+    \item \verb|echo "The quick brown fox jumped over the lazy dog" > /mnt/testfile|
+    \end{itemize}
+    \item \verb|dmesg| and verify that you see our encryption driver running.
+    \begin{itemize}
+    	\item You will be able to tell that our encryption is working if you see that the last few messages are tagged with "obnox", with a key of FrEnChToAsT, a write value of 1, and a sector number. It should show both the original and encrypted hex values. 
+    \end{itemize}
+    \item Ensure that the text you entered is in that file on the device: \verb|grep -a "quick" /mnt/testfile| . You should see the line you entered into the file.
+    \begin{itemize}
+    	\item The reason that you can read the file in English is because we implement something called "transparent encryption" with our driver. This means that the call to \verb|grep| automatically decrypts the file as it searches it and prints the decrypted text to the screen.
+    \end{itemize}
+    \item \verb|dmesg| again and verify that you see our encryption driver running.
+    \begin{itemize}
+    	\item The output should look similar to the first dmesg.
+    \end{itemize}
+\end{enumerate}
+
+
+
+
+%\section{Code Listing Test}
+
+%\begin{lstlisting}
+%#include <stdio.h>
+%#define N 10
+%/* Block
+%* comment */
+
+%int main()
+%{
+%	int i;
+%
+%	// Line comment.
+%	puts("Hello world!");
+%
+%	for (i = 0; i < N; i++)
+%	{
+%		puts("LaTeX is also great for programmers!");
+%	}
+%
+%	return 0;
+%}
+%\end{lstlisting}
+
+
+\end{document}
