@@ -1,0 +1,19 @@
+Need 2 algs
+	Best fit
+	efficiency
+	
+Best fit
+	Keep track of shortest block on page, page num, memory address in self balancing tree
+	Keep track of longest block on page, page num, memory address """"
+	
+	When have block to write:
+		Parse the tree to find the least size space that will hold the block
+		
+		
+Efficiency : 672
+	fragmented = mem_used / mem_claimed
+	
+	count the num of pages used
+	count the memory used on the pages
+	
+	return mem_used / (mem_per_page)*num_pages
