@@ -8,9 +8,11 @@ Best fit
 	
 	When have block to write:
 		Parse the tree to find the least size space that will hold the block
+	##NOTE: May just use an array (or iterative); will take longer, but we are
+	measuring fragmentation, not performance.
 		
 		
-Efficiency : 672
+Efficiency Syscall: 672
 	fragmented = mem_used / mem_claimed
 	
 	count the num of pages used
