@@ -67,9 +67,11 @@
 #include <linux/rcupdate.h>
 #include <linux/list.h>
 #include <linux/kmemleak.h>
+#include <linux/syscalls.h>
 
 #include <trace/events/kmem.h>
 
+#include <linux/linkage.h>
 #include <linux/atomic.h>
 
 #include "slab.h"
@@ -91,6 +93,10 @@ struct slob_block {
 	slobidx_t units;
 };
 typedef struct slob_block slob_t;
+
+long mem_used = 0;
+long mem_total = 0;
+
 
 /*
  * All partially free slob pages go on these lists.
@@ -200,6 +206,8 @@ static void *slob_new_pages(gfp_t gfp, int order, int node)
 
 	if (!page)
 		return NULL;
+	else
+		mem_total += PAGE_SIZE;
 
 	return page_address(page);
 }
@@ -268,7 +276,7 @@ static void *slob_page_alloc(struct page *sp, size_t size, int align)
 static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 {
 	struct page *sp;
-	struct list_head *prev;
+	struct page *smallest_block = NULL; 
 	struct list_head *slob_list;
 	slob_t *b = NULL;
 	unsigned long flags;
@@ -295,20 +303,25 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
 		if (sp->units < SLOB_UNITS(size))
 			continue;
 
-		/* Attempt to alloc */
-		prev = sp->lru.prev;
-		b = slob_page_alloc(sp, size, align);
-		if (!b)
-			continue;
-
-		/* Improve fragment distribution and reduce our average
-		 * search time by starting our next search here. (see
-		 * Knuth vol 1, sec 2.5, pg 449) */
-		if (prev != slob_list->prev &&
-				slob_list->next != prev->next)
-			list_move_tail(slob_list, prev->next);
-		break;
+		/* First time finding a large enough spot */
+		if (smallest_block == NULL)
+			smallest_block = sp;
+		
+		/* If we find a smaller block, mark that */	
+		if (smallest_block->units > sp->units) {
+			smallest_block = sp;
+		}
+	
 	}
+
+	
+	/* Attempt to alloc */
+	if (smallest_block != NULL) {
+		b = slob_page_alloc(smallest_block, size, align);
+		if (b)//successful alloc
+			mem_used += size;
+	}
+
 	spin_unlock_irqrestore(&slob_lock, flags);
 
 	/* Not enough space: must allocate a new page */
@@ -362,13 +375,15 @@ static void slob_free(void *block, int size)
 		__ClearPageSlab(sp);
 		page_mapcount_reset(sp);
 		slob_free_pages(b, 0);
+		mem_total -= PAGE_SIZE;
 		return;
-	}
+	}	
 
 	if (!slob_page_free(sp)) {
 		/* This slob page is about to become partially free. Easy! */
 		sp->units = units;
 		sp->freelist = b;
+		mem_used -= size;
 		set_slob(b, units,
 			(void *)((unsigned long)(b +
 					SLOB_UNITS(PAGE_SIZE)) & PAGE_MASK));
@@ -640,3 +655,12 @@ void __init kmem_cache_init_late(void)
 {
 	slab_state = FULL;
 }
+
+asmlinkage long sys_frag_check(void)
+{
+   	printk("In frag_check\n");	//DEBUG
+	printk("Hello world!");
+	printk("Used %ld of %ld\n", mem_used, mem_total);
+	return 48257;
+}
+
